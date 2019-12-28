@@ -1,0 +1,48 @@
+.home {
+  /* background-image: linear-gradient(216.6deg, #F1C9EC 1.53%, rgba(255, 255, 255, 0) 81.18%) ; */
+  background-image: url('../../Assets/img/photo-1574964557843-c6aae0c12946.jpeg');
+  background-repeat: no-repeat;
+  background-color: #AB84C8;
+  height: 100vh;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.buttonList {
+  display: flex;
+  height: auto;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.home .content .company h2, .home .content .engineer h2 {
+  display: flex;
+  margin: auto;
+}
+
+.home .content .engineer, .home .content .company {
+  display: flex;
+  height: 75px;
+  width: 250px;
+  border: none;
+  border-radius: 10px;
+  color: white  ;
+  font-weight: 800;
+  background-color:#AB84C8;
+  
+  box-shadow: 5px 1px 10px rgb(148, 109, 155);
+}
+
+.home .content h1 {
+  display: flex;
+  justify-content: center;
+}
+
+.home .content .engineer:hover , .home .content .company:hover {
+  background-color: blueviolet;
+}

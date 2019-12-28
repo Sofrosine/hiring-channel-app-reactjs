@@ -1,0 +1,19 @@
+.profile-section {
+  display: flex;
+  flex-direction: row;
+}
+
+.profile-bar {
+  display: flex;
+  width: 500px;
+  flex: 1;
+  margin-left: 15rem;
+}
+
+.button-profile {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin-right: 15rem;
+  padding-top: 7%;
+}

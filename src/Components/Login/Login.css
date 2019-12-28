@@ -1,0 +1,134 @@
+.login {
+  display: flex;
+  flex-direction: row;
+}
+
+/* LOGIN LEFT */
+
+.login-left {
+  display: flex;
+  height: 100vh;
+  flex: 3;
+  flex-direction: column;
+  background-image: linear-gradient(216.6deg, #F1C9EC 1.53%, rgba(255, 255, 255, 0) 81.18%);
+  background-color: #AB84C8;
+}
+
+.white-logo img {
+  align-self: flex-start;
+  height: auto;
+  width: 33%;
+  padding-top: 21px;
+  padding-left: 23px;
+}
+
+.vector-logo {
+  display: flex;
+  justify-content: center;
+}
+
+.vector-logo img {
+  width: 50%;
+}
+
+.description {
+  color:white;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  justify-content: center;
+}
+
+.description h2 {
+  font-weight: 800;
+}
+
+/* LOGIN RIGHT */
+
+.login-right {
+  display: flex;
+  flex: 2;
+  flex-direction: column;
+}
+
+.login-right .login-text {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: auto;
+  padding-top: 21px;
+  padding-left: 23px;
+  margin-bottom: 25%;
+}
+
+.login-right .login-text h1 {
+  font-weight: 800;
+}
+
+.login-right .login-text a {
+  color: blueviolet;
+  align-self: center;
+  margin-right: 10%;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  padding-left: 23px;
+  padding-right: 23px;
+  justify-content: space-between;
+}
+
+.input {
+  margin-bottom: 15%;
+}
+
+
+.forgotPassword {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.forgotPassword  a {
+  color: black;
+  font-weight: 800;
+  font-size: 12px;
+}
+
+.forgotPassword  a:hover {
+  color: black;
+}
+
+/* BUTTON */
+.button {
+  display: flex;
+  flex-direction: column;
+}
+
+.button .buttonLogin {
+  height: 40px;
+  margin-bottom: 5%;
+  border: none;
+  border-radius: 10px;
+  color: white  ;
+  background-color:#AB84C8;
+}
+
+.button .buttonLogin:hover {
+  background-color: blueviolet;
+}
+
+.button .buttonRegister {
+  height: 40px;
+  border: 1px solid #AB84C8;
+  border-radius: 10px;
+  color: #AB84C8  ;
+  background-color:white;
+}
+
+.button .buttonRegister:hover {
+  color: white;
+  background-color: blueviolet ;
+}
+

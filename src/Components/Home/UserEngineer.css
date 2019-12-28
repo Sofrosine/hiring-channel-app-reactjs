@@ -1,0 +1,33 @@
+div .profile-data {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+
+.back-home {
+  color: gray;
+  position: absolute;
+  right: 5%;
+}
+
+.back-home:hover {
+  color: rgb(53, 50, 50);
+  cursor: pointer;
+}
+
+div .profile-data table {
+  margin: auto;
+  width: 900px;
+  margin-right: 10%;
+}
+
+div .hire-button {
+  width: 50%;
+  margin-left: 25%;
+}
+
+#profile-image {
+  width: 500px;
+  margin-left: 250px;
+  margin-bottom: 50px;
+}
