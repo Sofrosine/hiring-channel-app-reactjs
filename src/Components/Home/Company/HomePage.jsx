@@ -25,6 +25,7 @@ class HomePage extends Component {
     order: "" || "ASC",
     limit: 5,
     page: 1,
+    totalPages: "",
     redirectHome: false,
     image: [
       "https://source.unsplash.com/random/800x720",
@@ -45,9 +46,11 @@ class HomePage extends Component {
 
   handlePageNext = e => {
     let page = this.state.page;
-    this.setState({
-      page: page + 1
-    });
+    if(this.state.page !== this.state.pages){
+      this.setState({
+        page: page + 1
+      });
+    }
     console.log("page", this.state.page);
   };
 
@@ -112,7 +115,8 @@ class HomePage extends Component {
           this.setState({
             ...this.state,
             // name: '',
-            engineers: searchResult
+            engineers: searchResult,
+            pages: result.data.pages
             // skill: '',
             // data: searchResult
           });
@@ -138,7 +142,8 @@ class HomePage extends Component {
     })
       .then(result => {
         // console.log(this.state.data)
-        console.log(result);
+        console.log('result',result);
+        console.log('pages', result.data.pages)
         const searchResult = result.data.data;
         if (
           this.state.name === "" &&
@@ -150,12 +155,14 @@ class HomePage extends Component {
           this.setState({
             ...this.state,
             // name: '',
-            engineers: searchResult
+            engineers: searchResult,
+            pages: result.data.pages
             // skill: '',
             // data: searchResult
           });
         }
-        console.log(this.state.name);
+        console.log('engineers',this.state.engineers)
+        console.log('pages', this.state.pages);
       })
       .catch(err => {
         console.log(err);
@@ -401,7 +408,7 @@ class HomePage extends Component {
               </li>
               <li className="page-item">
                 <a className="page-link" href="#">
-                  {this.state.page}
+                  {this.state.page} from {this.state.pages}
                 </a>
               </li>
               <li className="page-item">
