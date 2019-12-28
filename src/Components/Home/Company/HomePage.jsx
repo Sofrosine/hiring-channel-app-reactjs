@@ -26,6 +26,7 @@ class HomePage extends Component {
     limit: 5,
     page: 1,
     totalPages: "",
+    totalData: "",
     redirectHome: false,
     image: [
       "https://source.unsplash.com/random/800x720",
@@ -116,7 +117,8 @@ class HomePage extends Component {
             ...this.state,
             // name: '',
             engineers: searchResult,
-            pages: result.data.pages
+            pages: result.data.pages,
+            totalData: result.data.total
             // skill: '',
             // data: searchResult
           });
@@ -143,6 +145,7 @@ class HomePage extends Component {
       .then(result => {
         // console.log(this.state.data)
         console.log('result',result);
+        console.log('totaldata', result.data.total)
         console.log('pages', result.data.pages)
         const searchResult = result.data.data;
         if (
@@ -156,7 +159,8 @@ class HomePage extends Component {
             ...this.state,
             // name: '',
             engineers: searchResult,
-            pages: result.data.pages
+            pages: result.data.pages,
+            totalData: result.data.total
             // skill: '',
             // data: searchResult
           });
@@ -297,6 +301,7 @@ class HomePage extends Component {
     }
   }
 
+
   componentWillMount() {
     this.checkToken()
   }
@@ -409,6 +414,11 @@ class HomePage extends Component {
               <li className="page-item">
                 <a className="page-link" href="#">
                   {this.state.page} from {this.state.pages}
+                </a>
+              </li>
+              <li className="page-item">
+                <a className="page-link" href="#">
+                  {this.state.totalData}
                 </a>
               </li>
               <li className="page-item">
