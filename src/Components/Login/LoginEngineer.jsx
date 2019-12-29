@@ -46,7 +46,7 @@ class LoginEngineer extends Component {
           }
         }
       )
-      .then(result => {
+      .then( async result => {
         if (
           result.data === "Your email is not valid" ||
           result.data === "Your password is not valid "
@@ -57,15 +57,30 @@ class LoginEngineer extends Component {
             icon: "warning"
           });
         } else {
+          const storeToken = await axios({
+            method: "get",
+            url: "http://localhost:5000/engineer/login",
+            params: {
+              email: this.state.email,
+              password: this.state.password
+            }
+          }).then(({ data }) => {
+            const { token, id_engineer } = data.data
+            localStorage.setItem('id_engineer', JSON.stringify(id_engineer))
+            console.log(token)
+            localStorage.setItem('accessToken', JSON.stringify(token))
+            console.log(localStorage.getItem('accessToken'))
+          })
           Swal.fire({
             title: "Success",
-            text: "Successfully Registered, please login",
+            text: "Successfully Registered",
             icon: "success"
           });
-          this.setState({
-            email: "",
-            password: ""
-          });
+          // this.setState({
+          //   email: "",
+          //   password: ""
+          // });
+          this.props.history.push('/engineer/insert')
           
         }
       })
@@ -164,7 +179,7 @@ class LoginEngineer extends Component {
         </div>
         <div className="login-right">
           <div className="login-text">
-            <h1>Login as Engineer</h1>
+            <h1 className="grey-text text-darken-2">Login / Register as Engineer</h1>
             <Link to="/">
               <FontAwesomeIcon className="fa-lg" icon={faHome} />
             </Link>

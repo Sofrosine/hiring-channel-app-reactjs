@@ -1,22 +1,20 @@
 import React, { Component } from "react";
 import axios from "axios";
-import "./EngineerHome.css";
+import M from "materialize-css";
 import Navbar from "../../Navbar";
-import Profile from "../../HomeList/Profile";
-import BtnInsert from "../../../Assets/Button/BtnInsert";
-import BtnUpdate from "../../../Assets/Button/BtnUpdate";
-import BtnDelete from "../../../Assets/Button/BtnDelete";
-import BtnSkill from "../../../Assets/Button/BtnSkill";
-import Swal from "sweetalert2";
-import {Redirect} from 'react-router-dom'
 
 class EngineerHome extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { profile: [], redirectHome: false };
-  }
+  state = {
+    data: [],
+    approved: false,
+    rejected: false,
+    confirmButton: true,
+    is_accept: "",
+    id: "",
+    id_project: ""
+  };
 
-  getProfile = e => {
+  getStatus = () => {
     const config = {
       headers: {
         Authorization: `Bearer ${JSON.parse(
@@ -24,124 +22,237 @@ class EngineerHome extends Component {
         )}`
       }
     };
+
     axios
-      .get("http://localhost:5000/engineer/profile", config)
-      .then(result => {
-        console.log(result);
-        console.log(result.data);
-        const data = result.data;
+      .get("http://localhost:5000/engineer/status", config)
+      .then(response => {
+        console.log(response);
+        const data = response.data;
         this.setState({
           ...this.state,
-          profile: Object.values(data[0])
+          data: Object.values(data)
         });
-        console.log(this.state.profile);
-        console.log(this.state.profile);
+        console.log("data", this.state.data);
       })
       .catch(err => {
         console.log(err);
       });
   };
 
-  handleDelete = async e => {
-    e.preventDefault();
-    const config = {
+  updateStatus = () => {
+    axios({
+      method: "patch",
+      url: `http://localhost:5000/engineer/status/${this.state.id}`,
+      params: {
+        is_accept: this.state.is_accept
+      },
       headers: {
         Authorization: `Bearer ${JSON.parse(
           localStorage.getItem("accessToken")
         )}`
       }
-    };
-    const id_engineer = localStorage.getItem("id_engineer");
-    const swal = await Swal.mixin({
-      customClass: {
-        confirmButton: "btn btn-success",
-        cancelButton: "btn btn-danger"
-      },
-      buttonsStyling: false
-    });
-
-    swal
-      .fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes, delete it!",
-        cancelButtonText: "No, cancel!",
-        reverseButtons: true
-      })
+    })
       .then(result => {
-        if (result.value) {
-          axios
-            .delete(`http://localhost:5000/engineer/${id_engineer}`, config)
-            .then(result => {
-              console.log(result);
-              this.props.history.push("/");
-              this.props.history.push("/engineer/home");
-            })
-            .catch(err => {
-              console.log(err);
-            });
-
-          swal.fire("Deleted!", "Your file has been deleted.", "success");
-        } else if (
-          /* Read more about handling dismissals below */
-          result.dismiss === Swal.DismissReason.cancel
-        ) {
-          swal.fire("Cancelled", "Your file is safe :)", "error");
-        }
+        console.log(result);
+      })
+      .catch(err => {
+        console.log(err);
       });
+    if (this.state.is_accept === 0) {
+      axios({
+        method: "patch",
+        url: `http://localhost:5000/company/project/${this.state.id_project}`,
+        params: {
+          status: "Pending"
+        },
+        headers: {
+          Authorization: `Bearer ${JSON.parse(
+            localStorage.getItem("accessToken")
+          )}`
+        }
+      })
+        .then(result => {
+          console.log(result);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else if (this.state.is_accept === 2) {
+      axios({
+        method: "patch",
+        url: `http://localhost:5000/company/project/${this.state.id_project}`,
+        params: {
+          status: "On Process"
+        },
+        headers: {
+          Authorization: `Bearer ${JSON.parse(
+            localStorage.getItem("accessToken")
+          )}`
+        }
+      })
+        .then(result => {
+          console.log(result);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   };
 
-  redirectHome = () => {
-    if (this.state.redirectHome) {
-      return (
-        <Redirect to="/" />
-      )
-    }
-  }
-
-  checkToken = () => {
-    if (!localStorage.getItem('id_engineer')) {
-      return this.setState({
-        ...this.state,
-        redirectHome: true
-      })
-    }
-  }
-
-  componentWillMount() {
-    this.checkToken()
-  }
+  handleReject = async e => {
+    const updateAccept = await this.setState({
+      ...this.state,
+      confirmButton: false,
+      rejected: true,
+      is_accept: 0
+    });
+    this.updateStatus();
+  };
+  handleApprove = async e => {
+    const updateAccept = await this.setState({
+      ...this.state,
+      confirmButton: false,
+      rejected: false,
+      is_accept: 2
+    });
+    this.updateStatus();
+  };
 
   componentDidMount() {
-    this.getProfile();
+    this.getStatus();
   }
 
   render() {
     return (
-      <div>
-        {this.redirectHome()}
-        <Navbar />
-        <div className="profile-section">
-          <div className="profile-bar">
-            <Profile profile={this.state.profile} />
+      <>
+        <section id="navbar-list" className="navbar-list">
+          <div className="row">
+            <div className="col s12">
+              <Navbar />
+            </div>
           </div>
-          <div className="button-profile">
-            <BtnInsert
-              onClick={() => this.props.history.push("/engineer/insert")}
-            />
-            <BtnUpdate
-              onClick={() => this.props.history.push("/engineer/update")}
-            />
-            <BtnDelete onClick={this.handleDelete} />
-            <hr />
-            <BtnSkill
-              onClick={() => this.props.history.push("/engineer/skill")}
-            />
+        </section>
+        <section id="mail-list" className="mail-list">
+          <div className="container">
+            <div className="row">
+              <div className="col s12 center">
+                <h1>Project In</h1>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col s12 center">
+                <table className="highlight centered responsive-table">
+                  <thead>
+                    <tr>
+                      <th>Id Project</th>
+                      <th>Owner</th>
+                      <th>Project Name</th>
+                      <th>Approval</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  {/* {this.state.data.map(data => {
+                    <h1>data.Company</h1>
+                  })} */}
+                  <tbody>
+                    {this.state.data.map(data => {
+                      return (
+                        <tr>
+                          <td>{data.id_project}</td>
+                          <td>{data.Company}</td>
+                          <td>{data.project_name}</td>
+                          <td>
+                            {data.status === "On Process" ||
+                            data.status === "Success" ? (
+                              <p className="green-text">Approved</p>
+                            ) : (
+                              <>
+                                {this.state.confirmButton === true ? (
+                                  <>
+                                    <a
+                                      class="btn-floating btn-medium pulse"
+                                      onMouseOver={() =>
+                                        this.setState({
+                                          ...this.state,
+                                          id: data.id,
+                                          id_project: data.id_project
+                                        })
+                                      }
+                                      onClick={this.handleApprove}
+                                    >
+                                      <i class="material-icons">check</i>
+                                    </a>
+                                    <a
+                                      class="btn-floating btn-medium pulse red"
+                                      onMouseOver={() =>
+                                        this.setState({
+                                          ...this.state,
+                                          id: data.id,
+                                          id_project: data.id_project
+                                        })
+                                      }
+                                      onClick={this.handleReject}
+                                    >
+                                      <i class="material-icons">close</i>
+                                    </a>
+                                  </>
+                                ) : (
+                                  <>
+                                    {this.state.rejected === true ? (
+                                      <p className="red-text">Rejected</p>
+                                    ) : (
+                                      <p className="green-text">Approved</p>
+                                    )}
+                                  </>
+                                )}
+                              </>
+                            )}
+                          </td>
+                          <td>
+                            {data.status === "On Process" ? (
+                              <p className="blue-text">{data.status}</p>
+                            ) : (
+                              <>
+                                {data.status === "Success" ? (
+                                  <p className="green-text">{data.status}</p>
+                                ) : (
+                                  <p className="red-text">{data.status}</p>
+                                )}
+                              </>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col s12 center">
+                <a
+                  onClick={() => this.props.history.push("/engineer/project")}
+                  className="waves-effect waves-light btn blue white-text"
+                >
+                  {" "}
+                  Go To Project Status
+                </a>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col s12 center">
+                <a
+                  onClick={() => this.props.history.push("/engineer/profile")}
+                  className="waves-effect waves-light btn green white-text"
+                >
+                  {" "}
+                  Go To Profile
+                </a>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </section>
+      </>
     );
   }
 }

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import "./Engineer/EngineerHome.css";
+import "./Engineer/EngineerProfile.css";
 import './UserEngineer.css'
 import Navbar from "../Navbar";
 import Profile from "../HomeList/Profile"
@@ -38,6 +38,10 @@ class UserEngineer extends Component {
         console.log(err);
       });
   };
+
+  // redirectProject = () => {
+  //   this.props
+  // }
 
   componentDidMount() {
     this.getProfile()
@@ -86,7 +90,7 @@ class UserEngineer extends Component {
           </table>
           
         </div>
-        <button className="hire-button btn btn-danger">Hire</button>
+        <button onClick={() => this.props.history.push(`/user/${this.props.match.params.userId}/add`)} className="hire-button btn btn-danger">Hire</button>
       </div>
     )
   }

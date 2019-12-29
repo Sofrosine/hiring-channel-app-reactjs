@@ -99,7 +99,7 @@ class InsertData extends Component {
           <Button onClick={this.handleSubmit} variant="primary" type="submit">
             Submit
           </Button>
-          <Button className="ml-3" onClick={() => { this.props.history.push('/engineer/home') }} variant="primary" type="submit">
+          <Button className="ml-3" onClick={() => { this.props.history.push('/engineer/profile') }} variant="primary" type="submit">
             Back
           </Button>
         </Form>
