@@ -41,11 +41,11 @@ class Home extends Component {
           <h1 className="mb-5 text-white">Welcome to Hiring Channel Web Application</h1>
           <div className="buttonList d-flex flex-column flex-sm-row">
             {this.renderRedirectCompany()}
-            <button className="company mb-3 mb-sm-0 mr-sm-3 mr-md-5" onClick={this.setRedirectCompany}>
+            <button className="company mb-3 mb-sm-0 mr-sm-3 mr-md-5 red lighten-2" onClick={this.setRedirectCompany}>
               <h2>Company</h2>
             </button>
             {this.renderRedirectEngineer()}
-            <button className="engineer" onClick={this.setRedirectEngineer}>
+            <button className="engineer red lighten-2" onClick={this.setRedirectEngineer}>
               <h2>Engineer</h2>
             </button>
           </div>

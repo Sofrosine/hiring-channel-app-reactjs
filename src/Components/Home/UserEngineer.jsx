@@ -90,7 +90,7 @@ class UserEngineer extends Component {
           </table>
           
         </div>
-        <button onClick={() => this.props.history.push(`/user/${this.props.match.params.userId}/add`)} className="hire-button btn btn-danger">Hire</button>
+        <button onClick={() => this.props.history.push(`/user/${this.props.match.params.userId}/hire`)} className="hire-button btn btn-danger">Hire</button>
       </div>
     )
   }

@@ -56,19 +56,33 @@ class Navbar extends Component {
                 <a class="brand-logo">Hiring Channel</a>
                 <ul class="right hide-on-med-and-down">
                   <li>
-                    <a onClick={this.handleRedirectHomeEng}>Home</a>
-                  </li>
-                  <li>
                     <a>
-                      <i class="large material-icons">face</i>
+                      <i class="large material-icons">home</i>
                     </a>
                   </li>
                   <li>
-                    <a>Soultan</a>
+                    <a>
+                      <i class="large material-icons">account_circle</i>
+                    </a>
                   </li>
                   <li>
-                    <a onClick={this.handleRedirectHome}>
-                      <i class="large material-icons">power_settings_new</i>
+                    <a>
+                      <i class="large material-icons">notifications</i>
+                    </a>
+                  </li>
+                  <li>
+                    <a>
+                      <i class="large material-icons">textsms</i>
+                    </a>
+                  </li>
+                  <li>
+                    <a>
+                      <i
+                        class="large material-icons"
+                        onClick={this.handleRedirectHome}
+                      >
+                        power_settings_new
+                        </i>
                     </a>
                   </li>
                 </ul>

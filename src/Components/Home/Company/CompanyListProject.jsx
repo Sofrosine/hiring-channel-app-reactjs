@@ -4,7 +4,7 @@ import M from "materialize-css";
 import Navbar from "../../Navbar";
 import Swal from 'sweetalert2'
 
-class CompanyProject extends Component {
+class CompanyListProject extends Component {
   state = {
     data: [],
     project_name: ""
@@ -20,7 +20,7 @@ class CompanyProject extends Component {
     };
 
     axios
-      .get("http://localhost:5000/company/project", config)
+      .get("http://localhost:5000/company/getProject", config)
       .then(response => {
         console.log(response);
         const data = response.data;
@@ -59,14 +59,6 @@ class CompanyProject extends Component {
       })
       .then(result => {
         console.log(result)
-        Swal.fire({
-          title: "Data Inserted",
-          icon: "success"
-        });
-        this.setState({
-          ...this.state,
-          project_name: ""
-        })
       })
       .catch(err => {
         console.log(err)
@@ -76,7 +68,7 @@ class CompanyProject extends Component {
   componentDidMount() {
     this.getStatus();
     M.AutoInit();
-    
+
   }
 
   render() {
@@ -87,7 +79,7 @@ class CompanyProject extends Component {
           <div className="container">
             <div className="col center">
               <hr />
-              <h1>Project Progress</h1>
+              <h1>Project List</h1>
               <hr />
             </div>
           </div>
@@ -101,26 +93,24 @@ class CompanyProject extends Component {
                     <th>Id Project</th>
                     <th>Project Name</th>
                     <th>Status</th>
-                    <th>Engineer Name</th>
                   </thead>
                   <tbody>
                     {this.state.data.map(data => {
                       return (
                         <tr>
-                          <td>{data.id}</td>
+                          <td>{data.id_project}</td>
                           <td>{data.project_name}</td>
                           {data.status === "Success" ? (
                             <td className="green-text">{data.status}</td>
                           ) : (
-                            <>
-                              {data.status === "On Process" ? (
-                                <td className="blue-text">{data.status}</td>
-                              ) : (
-                                <td className="red-text">{data.status}</td>
-                              )}
-                            </>
-                          )}
-                          <td>{data.Engineer}</td>
+                              <>
+                                {data.status === "On Process" ? (
+                                  <td className="blue-text">{data.status}</td>
+                                ) : (
+                                    <td className="red-text">{data.status}</td>
+                                  )}
+                              </>
+                            )}
                         </tr>
                       );
                     })}
@@ -130,7 +120,7 @@ class CompanyProject extends Component {
             </div>
           </div>
         </section>
-        {/* <section id="add-project" className="add-project">
+        <section id="add-project" className="add-project">
           <div className="row">
             <div className="container">
               <div className="col">
@@ -146,7 +136,7 @@ class CompanyProject extends Component {
                     <div className="row">
                       <div className="input-field col s12">
                         <i class="material-icons prefix">work</i>
-                        <input value={this.state.project_name} onChange={this.handleProject} id="icon_prefix" type="text" class="validate" required/>
+                        <input value={this.state.project_name} onChange={this.handleProject} id="icon_prefix" type="text" class="validate" required />
                         <label for="icon_prefix">Project Name</label>
                       </div>
                     </div>
@@ -160,10 +150,10 @@ class CompanyProject extends Component {
               </div>
             </div>
           </div>
-        </section> */}
+        </section>
       </>
     );
   }
 }
 
-export default CompanyProject;
+export default CompanyListProject;

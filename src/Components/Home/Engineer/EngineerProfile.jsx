@@ -137,7 +137,6 @@ class EngineerProfile extends Component {
                   onClick={() => this.props.history.push("/engineer/update")}
                 />
                 {/* <BtnDelete onClick={this.handleDelete} /> */}
-                <hr />
                 <BtnSkill
                   onClick={() => this.props.history.push("/engineer/skill")}
                 />

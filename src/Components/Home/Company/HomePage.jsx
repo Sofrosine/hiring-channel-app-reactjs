@@ -13,7 +13,8 @@ import {
   faPowerOff
 } from "@fortawesome/free-solid-svg-icons";
 import UserEngineer from "../UserEngineer";
-import {Redirect} from 'react-router-dom'
+import { Redirect } from "react-router-dom";
+import M from 'materialize-css'
 
 class HomePage extends Component {
   state = {
@@ -43,11 +44,13 @@ class HomePage extends Component {
     this.setState({
       [e.target.name]: e.target.value
     });
+    console.log('name',this.state.name)
+    console.log('skill', this.state.skill)
   };
 
   handlePageNext = e => {
     let page = this.state.page;
-    if(this.state.page !== this.state.pages){
+    if (this.state.page !== this.state.pages) {
       this.setState({
         page: page + 1
       });
@@ -88,8 +91,7 @@ class HomePage extends Component {
     });
   };
 
-  handleSearch = e => {
-    e.preventDefault();
+  handleSearch = () => {
     axios({
       method: "get",
       url: "http://localhost:5000/engineer/filter",
@@ -144,9 +146,9 @@ class HomePage extends Component {
     })
       .then(result => {
         // console.log(this.state.data)
-        console.log('result',result);
-        console.log('totaldata', result.data.total)
-        console.log('pages', result.data.pages)
+        console.log("result", result);
+        console.log("totaldata", result.data.total);
+        console.log("pages", result.data.pages);
         const searchResult = result.data.data;
         if (
           this.state.name === "" &&
@@ -165,8 +167,8 @@ class HomePage extends Component {
             // data: searchResult
           });
         }
-        console.log('engineers',this.state.engineers)
-        console.log('pages', this.state.pages);
+        console.log("engineers", this.state.engineers);
+        console.log("pages", this.state.pages);
       })
       .catch(err => {
         console.log(err);
@@ -235,7 +237,7 @@ class HomePage extends Component {
           ...this.state,
           profile: Object.values(data[0])
         });
-        this.props.history.push(`/user/${this.state.user}`)
+        this.props.history.push(`/user/${this.state.user}`);
         // console.log(this.state.profile);
         // console.log(this.state.profile)
       })
@@ -246,40 +248,38 @@ class HomePage extends Component {
   handleRedirectHome = () => {
     this.setState({
       redirectHome: true
-    })
-    localStorage.clear()
-  }
+    });
+    localStorage.clear();
+  };
 
   redirectHome = () => {
     if (this.state.redirectHome) {
-      return (
-        <Redirect to="/" />
-      )
+      return <Redirect to="/" />;
     }
-  }
+  };
 
-  handleLimitPlus = (e) => {
-    const limit = this.state.limit
+  handleLimitPlus = e => {
+    const limit = this.state.limit;
     this.setState({
       ...this.state,
       limit: limit + 1
-    })
-  }
+    });
+  };
 
-  handleLimitMin = (e) => {
-    const limit = this.state.limit
+  handleLimitMin = e => {
+    const limit = this.state.limit;
     if (limit > 1) {
       this.setState({
         ...this.state,
         limit: limit - 1
-      })
+      });
     } else {
       this.setState({
         ...this.state,
         limit: 1
-      })
+      });
     }
-  }
+  };
 
   limitPlus = async e => {
     const plus = await this.handleLimitPlus(e);
@@ -291,252 +291,251 @@ class HomePage extends Component {
     this.handleSearch(e);
   };
 
-
   checkToken = () => {
-    if (!localStorage.getItem('id_company')) {
+    if (!localStorage.getItem("id_company")) {
       return this.setState({
         ...this.state,
         redirectHome: true
-      })
+      });
     }
+  };
+
+  searching = async (e) => {
+    await this.handleChange(e)
+    this.handleSearch()
   }
 
-
   componentWillMount() {
-    this.checkToken()
+    this.checkToken();
   }
 
   componentDidMount() {
     this.handleSearch2();
+    M.AutoInit()
   }
 
   render() {
     return (
       <div className="homepage">
         {this.redirectHome()}
-        <nav className="d-flex navbar p-0 pl-4 navbar-expand-sm navbar-light bg-light mb-5">
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarNav"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <a className="navbar-brand" href="#">
-            <img src={arkaLogo}></img>
-          </a>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav">
-              <li className="nav-item search-input">
-                <form
-                  className="form-inline md-form form-sm mt-0"
-                  onSubmit={this.handleSearch}
-                >
-                  <FontAwesomeIcon
-                    onClick={this.handleSearch}
-                    icon={faSearch}
-                  />
-                  <input
-                    className="form-control form-control-sm ml-3 mr-0"
-                    type="text"
-                    name="name"
-                    placeholder="Search by name"
-                    aria-label="Search"
-                    onChange={this.handleChange}
-                    value={this.state.name}
-                  />
+        <section id="navbar-list" className="navbar-list mb-3 ">
+          <div class="navbar-fixed">
+            <nav>
+              <div class="nav-wrapper">
+                <div className="container">
+                  <a class="brand-logo">Hiring Channel</a>
+                  <ul class="right hide-on-med-and-down">
+                    <li>
+                      <a>
+                        <i class="large material-icons">home</i>
+                      </a>
+                    </li>
+                    <li>
+                      <a>
+                        <i class="large material-icons">account_circle</i>
+                      </a>
+                    </li>
+                    <li>
+                      <a>
+                        <i class="large material-icons">notifications</i>
+                      </a>
+                    </li>
+                    <li>
+                      <a>
+                        <i class="large material-icons">textsms</i>
+                      </a>
+                    </li>
+                    <li>
+                      <a>
+                        <i
+                          class="large material-icons"
+                          onClick={this.handleRedirectHome}
+                        >
+                          power_settings_new
+                        </i>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </nav>
+          </div>
+        </section>
+        <section className="page-list" id="page-list">
+          <div className="container">
+            <div className="row">
+              <div className="col s12 m6">
+                <a onClick={() => this.props.history.push('/company/progress')} class="mr-2 waves-effect waves-light btn red lighten-2 white-text">Progress</a>
+              
+              
+                <a onClick={() => this.props.history.push('/company/project')} class="waves-effect waves-light btn red lighten-2 white-text">Project List</a>
+              </div>
+              <div className="col s12 m6"></div>
+            </div>
+          </div>
+        </section>
+        <section id="pagination-list" className="pagination-list">
+          <div className="container">
+            <div className="row">
+              <div className="input-field col s12 m4">
+                <form onSubmit={this.handleSearch}>
+                  <div className="input-field">
+                    <i class="material-icons prefix red-text text-lighten-2">contacts</i>
+                    <input
+                      type="text"
+                      name="name"
+                      id="searching-name"
+                      class="validate"
+                      aria-label="Search"
+                      placeholder="Search by Name"
+                      onChange={this.searching}
+                      value={this.state.name}
+                    />
+                    <label for="searching-name" className="white-text">
+                      Search by Name
+                  </label>
+                  </div>
+                  <div className="input-field">
+                    <i class="material-icons prefix red-text text-lighten-2">build</i>
+                    <input
+                      className="p-1"
+                      type="text"
+                      id="searching-skill"
+                      name="skill"
+                      placeholder="Search by Skill"
+                      onChange={this.searching}
+                      value={this.state.skill}
+                    />
+                    <label for="searching-skill" className="white-text">
+                      Search by Skill
+                  </label>
+                  </div>
+                  
                 </form>
-              </li>
-              <li className="nav-item home-text">
-                <a href="#" className="nav-link">
-                  Home
-                </a>
-              </li>
-              <li className="nav-item profile-navbar mr-5">
-                <a href="#" className="nav-link">
-                  <img
-                    className="profile-image mr-2"
-                    src="https://source.unsplash.com/random"
-                  />
-                  Soultan
-                </a>
-              </li>
-              <li className="nav-item divider ml-3 mr-5">
-                <h1 className="text-secondary">|</h1>
-              </li>
-              <li className="nav-item chat-navbar">
-                <a href="#" className="nav-link">
-                  <FontAwesomeIcon icon={faCommentDots} className="fa-lg" />
-                </a>
-              </li>
-              <li className="nav-item notification-navbar">
-                <a href="#" className="nav-link">
-                  <FontAwesomeIcon icon={faBell} className="fa-lg" />
-                </a>
-              </li>
-              <li className="nav-item notification-navbar ml-5">
-                <a href="#" className="nav-link">
-                  <FontAwesomeIcon onClick={this.handleRedirectHome} icon={faPowerOff} className="fa-lg" />
-                </a>
-              </li>
-            </ul>
-          </div>
-        </nav>
-        <div className="filtering mb-5">
-          <div className="skill-input">
-            <form
-              className="form-inline md-form form-sm mt-0"
-              onSubmit={this.handleSearch}
-            >
-              <FontAwesomeIcon
-                icon={faSearch}
-                className="mr-3"
-                onClick={this.handleSearch}
-              />
-              <input
-                className="p-1"
-                type="text"
-                name="skill"
-                placeholder="Search by skill"
-                onChange={this.handleChange}
-                value={this.state.skill}
-              />
-            </form>
-          </div>
-          <div>
-            <ul className="pagination">
-              <li className="page-item">
-                <a className="page-link" href="#" onClick={this.previousPage}>
-                  &laquo;
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link" href="#">
-                  {this.state.page} from {this.state.pages}
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link" href="#">
-                  {this.state.totalData}
-                </a>
-              </li>
-              <li className="page-item">
-                <a
-                  className="page-link"
-                  href="#"
-                  // onMouseEnter={this.handlePageNext}
-                  // onClick={this.handleSearch}
-                  onClick={this.nextPage}
-                >
-                  &raquo;
-                </a>
-              </li>
-            </ul>
-          </div>
+              </div>
+              <div className="col s12 m4 m-auto right">
+                <ul className="pagination">
+                  <li className="page-item">
+                    <a
+                      className="page-link red-text text-lighten-2 white"
+                      href="#"
+                      onClick={this.previousPage}
+                    >
+                      &laquo;
+                    </a>
+                  </li>
+                  <li className="page-item">
+                    <a className="page-link red-text text-lighten-2 white" href="#">
+                      {this.state.page} from {this.state.pages}
+                    </a>
+                  </li>
+                  <li className="page-item">
+                    <a className="page-link red-text text-lighten-2 white" href="#">
+                      {this.state.totalData}
+                    </a>
+                  </li>
+                  <li className="page-item">
+                    <a
+                      className="page-link red-text text-lighten-2 white"
+                      href="#"
+                      // onMouseEnter={this.handlePageNext}
+                      // onClick={this.handleSearch}
+                      onClick={this.nextPage}
+                    >
+                      &raquo;
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div className="col s12 m4 m-auto right">
+                <ul className="pagination">
+                  <li className="page-item">
+                    <a className="page-link red-text text-lighten-2 white" href="#" onClick={this.limitMin}>
+                      -
+                    </a>
+                  </li>
+                  <li className="page-item">
+                    <a className="page-link red-text text-lighten-2 white" href="#">
+                      {this.state.limit}
+                    </a>
+                  </li>
+                  <li className="page-item">
+                    <a
+                      className="page-link red-text text-lighten-2 white"
+                      href="#"
+                      // onMouseEnter={this.handlePageNext}
+                      // onClick={this.handleSearch}
+                      onClick={this.limitPlus}
+                    >
+                      +
+                    </a>
+                  </li>
+                </ul>
+              </div>
 
-          <div>
-            <ul className="pagination">
-              <li className="page-item">
-                <a className="page-link" href="#" onClick={this.limitMin}>
-                  -
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link" href="#">
-                  {this.state.limit}
-                </a>
-              </li>
-              <li className="page-item">
-                <a
-                  className="page-link"
-                  href="#"
-                  // onMouseEnter={this.handlePageNext}
-                  // onClick={this.handleSearch}
-                  onClick={this.limitPlus}
-                >
-                  +
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* <div className="limit-handle">
-            <div className="limit-plus">
-              <button onClick={this.limitPlus}>+</button>
             </div>
-            <div>
-              <p>{this.state.limit}</p>
-            </div>
-            <div className="limit-min">
-              <button onClick={this.limitMin}>-</button>
-            </div>
-          </div> */}
-
-          <div className="dropdown">
-            <button
-              className="btn btn-secondary dropdown-toggle"
-              type="button"
-              id="dropdownMenuButton"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              Sort by
-            </button>
-            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a
-                className="dropdown-item"
-                onClick={this.handleSearch}
-                onMouseEnter={this.handleSort}
-              >
-                name
-              </a>
-              <a
-                className="dropdown-item"
-                onClick={this.handleSearch}
-                onMouseEnter={this.handleSort}
-              >
-                skill
-              </a>
-              <a
-                className="dropdown-item"
-                onClick={this.handleSearch}
-                onMouseEnter={this.handleSort}
-              >
-                dateupdated
-              </a>
+            <div className="row">
+              <div className="col s12 m6 center">
+                {/* <div className="dropdown">
+                  <button
+                    className="btn btn-secondary dropdown-toggle"
+                    type="button"
+                    id="dropdownMenuButton"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    Sort by
+                  </button>
+                  <div
+                    className="dropdown-menu"
+                    aria-labelledby="dropdownMenuButton"
+                  >
+                    <a
+                      className="dropdown-item"
+                      onClick={this.handleSearch}
+                      onMouseEnter={this.handleSort}
+                    >
+                      name
+                    </a>
+                    <a
+                      className="dropdown-item"
+                      onClick={this.handleSearch}
+                      onMouseEnter={this.handleSort}
+                    >
+                      skill
+                    </a>
+                    <a
+                      className="dropdown-item"
+                      onClick={this.handleSearch}
+                      onMouseEnter={this.handleSort}
+                    >
+                      dateupdated
+                    </a>
+                  </div> */}
+                {/* </div> */}
+                <a class='dropdown-trigger btn red lighten-2 white-text' href='#' data-target='dropdown2'>Sort By</a>
+                <ul id='dropdown2' class='dropdown-content'>
+                  <li><a href="#!" className="red-text text-lighten-2" onClick={this.handleSearch}
+                    onMouseOver={this.handleSort}>name</a></li>
+                  <li><a href="#!" className="red-text text-lighten-2" onClick={this.handleSearch}
+                    onMouseOver={this.handleSort}>skill</a></li>
+                  <li><a href="#!" className="red-text text-lighten-2" onClick={this.handleSearch}
+                    onMouseOver={this.handleSort}>dateupdated</a></li>
+                </ul>
+              </div>
+              <div className="col s12 m6 center">
+                <a class='dropdown-trigger btn red lighten-2 white-text' href='#' data-target='dropdown1'>Order</a>
+                <ul id='dropdown1' class='dropdown-content'>
+                  <li><a href="#!" className="red-text text-lighten-2" onClick={this.handleSearch}
+                    onMouseOver={this.handleOrder}>ASC</a></li>
+                  <li><a href="#!" className="red-text text-lighten-2" onClick={this.handleSearch}
+                    onMouseOver={this.handleOrder}>DESC</a></li>
+                </ul>
+              </div>
             </div>
           </div>
-          <div className="dropdown">
-            <button
-              className="btn btn-secondary dropdown-toggle"
-              type="button"
-              id="dropdownMenuButton"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              Order
-            </button>
-            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a
-                className="dropdown-item"
-                onClick={this.handleSearch}
-                onMouseEnter={this.handleOrder}
-              >
-                ASC
-              </a>
-              <a
-                className="dropdown-item"
-                onClick={this.handleSearch}
-                onMouseEnter={this.handleOrder}
-              >
-                DESC
-              </a>
-            </div>
-          </div>
-        </div>
+        </section>
         <div className="card-list">
           {this.state.engineers.map(engineer => {
             return (
@@ -570,7 +569,7 @@ class HomePage extends Component {
                         name={engineer.id}
                       />
                       <p className="ml-1" name={engineer.id}>
-                        {`${engineer.success_rate || 0  }% Success Rate`}
+                        {`${engineer.success_rate || 0}% Success Rate`}
                       </p>
                     </span>
                     <div className="skills" name={engineer.id}>

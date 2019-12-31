@@ -17,13 +17,15 @@ import EngineerHome from './Components/Home/Engineer/EngineerHome';
 import EngineerProject from './Components/Home/Engineer/EngineerProject';
 import CompanyProject from './Components/Home/Company/CompanyProject';
 import AddProject from './Components/Home/Company/AddProject';
+import CompanyListProject from './Components/Home/Company/CompanyListProject';
 
 function App() {
   return (
     <Router>
       <Route exact path="/" component={Home}/>
       <Route path="/company/home" component={HomePage}/>
-      <Route path="/company/project" component={CompanyProject}/>
+      <Route path="/company/progress" component={CompanyProject}/>
+      <Route path="/company/project" component={CompanyListProject}/>
       <Route exact path="/login/company" component={LoginCompany}/>
       <Route path="/login/engineer" component={LoginEngineer}/>
       <Route exact path="/engineer/profile" component={EngineerProfile}/>
@@ -34,8 +36,7 @@ function App() {
       <Route path="/engineer/skill" component={EditSkill} />
       <Route path="/list" component={EngineerList}/>
       <Route exact path="/user/:userId" component={UserEngineer}/>
-      <Route path="/user/:userId/add" component={AddProject}/>
-      <Route path="/tezt" component={Tezt}/>
+      <Route path="/user/:userId/hire" component={AddProject}/>
     </Router>
   );
 }
