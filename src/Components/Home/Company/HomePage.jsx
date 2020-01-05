@@ -14,7 +14,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import UserEngineer from "../UserEngineer";
 import { Redirect } from "react-router-dom";
-import M from 'materialize-css'
+import M from "materialize-css";
+
+import { connect } from "react-redux";
+import { getUser } from "../../../Redux/Actions/HomePage/getUser";
+import { searchUser } from "../../../Redux/Actions/HomePage/searchUser";
+import Navbar from "../../Navbar";
+import Pagination from "./Util/Pagination";
+import Card from "../../../Assets/Card";
 
 class HomePage extends Component {
   state = {
@@ -29,23 +36,14 @@ class HomePage extends Component {
     totalPages: "",
     totalData: "",
     redirectHome: false,
-    image: [
-      "https://source.unsplash.com/random/800x720",
-      "https://source.unsplash.com/random/900x720",
-      "https://source.unsplash.com/random/600x720",
-      "https://source.unsplash.com/random/500x720",
-      "https://source.unsplash.com/random/500x720",
-      "https://source.unsplash.com/random/500x720",
-      "https://source.unsplash.com/random/500x720"
-    ]
   };
 
   handleChange = e => {
     this.setState({
       [e.target.name]: e.target.value
     });
-    console.log('name',this.state.name)
-    console.log('skill', this.state.skill)
+    console.log("name", this.state.name);
+    console.log("skill", this.state.skill);
   };
 
   handlePageNext = e => {
@@ -91,132 +89,64 @@ class HomePage extends Component {
     });
   };
 
-  handleSearch = () => {
-    axios({
-      method: "get",
-      url: "http://localhost:5000/engineer/filter",
-      params: {
-        name: this.state.name,
-        skill: this.state.skill,
-        sort_by: this.state.sort,
-        order: this.state.order,
-        limit: this.state.limit,
-        page: this.state.page
-      }
-    })
-      .then(result => {
-        // console.log(this.state.data)
-        console.log(result);
-        const searchResult = result.data.data;
-        if (
-          this.state.name === "" &&
-          this.state.skill === "" &&
-          this.state.sort === ""
-        ) {
-          this.getAllEngineer();
-        } else {
-          this.setState({
-            ...this.state,
-            // name: '',
-            engineers: searchResult,
-            pages: result.data.pages,
-            totalData: result.data.total
-            // skill: '',
-            // data: searchResult
-          });
-        }
-        console.log(this.state.name);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-  handleSearch2 = () => {
-    axios({
-      method: "get",
-      url: "http://localhost:5000/engineer/filter",
-      params: {
-        name: this.state.name,
-        skill: this.state.skill,
-        sort_by: this.state.sort,
-        order: this.state.order,
-        limit: this.state.limit,
-        page: this.state.page
-      }
-    })
-      .then(result => {
-        // console.log(this.state.data)
-        console.log("result", result);
-        console.log("totaldata", result.data.total);
-        console.log("pages", result.data.pages);
-        const searchResult = result.data.data;
-        if (
-          this.state.name === "" &&
-          this.state.skill === "" &&
-          this.state.sort === ""
-        ) {
-          this.getAllEngineer();
-        } else {
-          this.setState({
-            ...this.state,
-            // name: '',
-            engineers: searchResult,
-            pages: result.data.pages,
-            totalData: result.data.total
-            // skill: '',
-            // data: searchResult
-          });
-        }
-        console.log("engineers", this.state.engineers);
-        console.log("pages", this.state.pages);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-
-  getAllEngineer = () => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(
-          localStorage.getItem("accessToken")
-        )}`
-      }
+  handleSearch2 = async () => {
+    const params = {
+      name: this.state.name,
+      skill: this.state.skill,
+      sort_by: this.state.sort,
+      order: this.state.order,
+      limit: this.state.limit,
+      page: this.state.page
     };
-    axios
-      .get("http://localhost:5000/engineer/filter")
-      .then(result => {
-        console.log(result.data.data);
-        const data = result.data.data;
+
+    try {
+      await this.props.dispatch(searchUser(params));
+      const result = await this.props.searchUser;
+      if (
+        this.state.name === "" &&
+        this.state.skill === "" &&
+        this.state.sort === ""
+      ) {
+        this.getAllEngineer();
+      } else {
         this.setState({
           ...this.state,
-          engineers: data
+          engineers: result.searchData.data.data,
+          pages: result.searchData.data.pages,
+          totalData: result.searchData.data.total
         });
-        console.log(this.state.engineers);
-      })
-      .catch(err => {
-        console.log(err);
-        console.log("Login first");
-      });
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  getAllEngineer = async () => {
+    await this.props.dispatch(getUser());
+    const user = await this.props.user;
+    this.setState({
+      engineers: user.userData.data.data
+    });
+    console.log("engineerzz", this.state.engineers);
   };
 
   nextPage = async e => {
     const next = await this.handlePageNext(e);
-    this.handleSearch(e);
+    this.handleSearch2(e);
   };
 
   previousPage = async e => {
     const previous = await this.handlePagePrevious(e);
-    this.handleSearch(e);
+    this.handleSearch2(e);
   };
 
   getUserId = e => {
-    // console.log(this.state.user);
+    console.log('user',this.state.user);
     this.setState({
       ...this.state,
       user: e.target.name
     });
-    // console.log(e.target.name);
+    console.log('name',e.target.name);
   };
 
   getProfile = e => {
@@ -231,15 +161,12 @@ class HomePage extends Component {
       .get(`http://localhost:5000/engineer/user/${this.state.user}`, config)
       .then(result => {
         console.log(result);
-        // console.log(result.data);
         const data = result.data;
         this.setState({
           ...this.state,
           profile: Object.values(data[0])
         });
         this.props.history.push(`/user/${this.state.user}`);
-        // console.log(this.state.profile);
-        // console.log(this.state.profile)
       })
       .catch(err => {
         console.log(err);
@@ -283,12 +210,12 @@ class HomePage extends Component {
 
   limitPlus = async e => {
     const plus = await this.handleLimitPlus(e);
-    this.handleSearch(e);
+    this.handleSearch2();
   };
 
   limitMin = async e => {
     const min = await this.handleLimitMin(e);
-    this.handleSearch(e);
+    this.handleSearch2();
   };
 
   checkToken = () => {
@@ -300,75 +227,62 @@ class HomePage extends Component {
     }
   };
 
-  searching = async (e) => {
-    await this.handleChange(e)
-    this.handleSearch()
-  }
+  redirectHomeCompany = () => {
+    if (this.props.homeCompany) {
+      return <Redirect to="/company/home" />;
+    }
+  };
+
+  redirectHomeProfile = () => {
+    if (this.props.profileCompany) {
+      return <Redirect to="/company/profile" />;
+    }
+  };
+
+  searching = async e => {
+    await this.handleChange(e);
+    this.handleSearch2();
+  };
 
   componentWillMount() {
     this.checkToken();
   }
 
   componentDidMount() {
+    // this.getAllEngineer();
     this.handleSearch2();
-    M.AutoInit()
+    M.AutoInit();
+    var elems = document.querySelectorAll(".sidenav");
+    M.Sidenav.init(elems);
   }
 
   render() {
     return (
       <div className="homepage">
+        {this.redirectHomeCompany()}
+        {this.redirectHomeProfile()}
         {this.redirectHome()}
         <section id="navbar-list" className="navbar-list mb-3 ">
-          <div class="navbar-fixed">
-            <nav>
-              <div class="nav-wrapper">
-                <div className="container">
-                  <a class="brand-logo">Hiring Channel</a>
-                  <ul class="right hide-on-med-and-down">
-                    <li>
-                      <a>
-                        <i class="large material-icons">home</i>
-                      </a>
-                    </li>
-                    <li>
-                      <a>
-                        <i class="large material-icons">account_circle</i>
-                      </a>
-                    </li>
-                    <li>
-                      <a>
-                        <i class="large material-icons">notifications</i>
-                      </a>
-                    </li>
-                    <li>
-                      <a>
-                        <i class="large material-icons">textsms</i>
-                      </a>
-                    </li>
-                    <li>
-                      <a>
-                        <i
-                          class="large material-icons"
-                          onClick={this.handleRedirectHome}
-                        >
-                          power_settings_new
-                        </i>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </nav>
-          </div>
+          <Navbar />
         </section>
+
         <section className="page-list" id="page-list">
           <div className="container">
             <div className="row">
               <div className="col s12 m6">
-                <a onClick={() => this.props.history.push('/company/progress')} class="mr-2 waves-effect waves-light btn red lighten-2 white-text">Progress</a>
-              
-              
-                <a onClick={() => this.props.history.push('/company/project')} class="waves-effect waves-light btn red lighten-2 white-text">Project List</a>
+                <a
+                  onClick={() => this.props.history.push("/company/progress")}
+                  class="mr-2 waves-effect waves-light btn red lighten-2 white-text"
+                >
+                  Progress
+                </a>
+
+                <a
+                  onClick={() => this.props.history.push("/company/project")}
+                  class="waves-effect waves-light btn red lighten-2 white-text"
+                >
+                  Project List
+                </a>
               </div>
               <div className="col s12 m6"></div>
             </div>
@@ -378,9 +292,11 @@ class HomePage extends Component {
           <div className="container">
             <div className="row">
               <div className="input-field col s12 m4">
-                <form onSubmit={this.handleSearch}>
+                <form onSubmit={this.handleSearch2}>
                   <div className="input-field">
-                    <i class="material-icons prefix red-text text-lighten-2">contacts</i>
+                    <i class="material-icons prefix red-text text-lighten-2">
+                      contacts
+                    </i>
                     <input
                       type="text"
                       name="name"
@@ -393,10 +309,12 @@ class HomePage extends Component {
                     />
                     <label for="searching-name" className="white-text">
                       Search by Name
-                  </label>
+                    </label>
                   </div>
                   <div className="input-field">
-                    <i class="material-icons prefix red-text text-lighten-2">build</i>
+                    <i class="material-icons prefix red-text text-lighten-2">
+                      build
+                    </i>
                     <input
                       className="p-1"
                       type="text"
@@ -408,54 +326,27 @@ class HomePage extends Component {
                     />
                     <label for="searching-skill" className="white-text">
                       Search by Skill
-                  </label>
+                    </label>
                   </div>
-                  
                 </form>
               </div>
+
               <div className="col s12 m4 m-auto right">
                 <ul className="pagination">
                   <li className="page-item">
                     <a
                       className="page-link red-text text-lighten-2 white"
                       href="#"
-                      onClick={this.previousPage}
+                      onClick={this.limitMin}
                     >
-                      &laquo;
-                    </a>
-                  </li>
-                  <li className="page-item">
-                    <a className="page-link red-text text-lighten-2 white" href="#">
-                      {this.state.page} from {this.state.pages}
-                    </a>
-                  </li>
-                  <li className="page-item">
-                    <a className="page-link red-text text-lighten-2 white" href="#">
-                      {this.state.totalData}
-                    </a>
-                  </li>
-                  <li className="page-item">
-                    <a
-                      className="page-link red-text text-lighten-2 white"
-                      href="#"
-                      // onMouseEnter={this.handlePageNext}
-                      // onClick={this.handleSearch}
-                      onClick={this.nextPage}
-                    >
-                      &raquo;
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <div className="col s12 m4 m-auto right">
-                <ul className="pagination">
-                  <li className="page-item">
-                    <a className="page-link red-text text-lighten-2 white" href="#" onClick={this.limitMin}>
                       -
                     </a>
                   </li>
                   <li className="page-item">
-                    <a className="page-link red-text text-lighten-2 white" href="#">
+                    <a
+                      className="page-link red-text text-lighten-2 white"
+                      href="#"
+                    >
                       {this.state.limit}
                     </a>
                   </li>
@@ -463,8 +354,6 @@ class HomePage extends Component {
                     <a
                       className="page-link red-text text-lighten-2 white"
                       href="#"
-                      // onMouseEnter={this.handlePageNext}
-                      // onClick={this.handleSearch}
                       onClick={this.limitPlus}
                     >
                       +
@@ -472,132 +361,106 @@ class HomePage extends Component {
                   </li>
                 </ul>
               </div>
-
             </div>
             <div className="row">
               <div className="col s12 m6 center">
-                {/* <div className="dropdown">
-                  <button
-                    className="btn btn-secondary dropdown-toggle"
-                    type="button"
-                    id="dropdownMenuButton"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                    Sort by
-                  </button>
-                  <div
-                    className="dropdown-menu"
-                    aria-labelledby="dropdownMenuButton"
-                  >
+                <a
+                  class="dropdown-trigger btn red lighten-2 white-text"
+                  href="#"
+                  data-target="dropdown2"
+                >
+                  Sort By
+                </a>
+                <ul id="dropdown2" class="dropdown-content">
+                  <li>
                     <a
-                      className="dropdown-item"
-                      onClick={this.handleSearch}
-                      onMouseEnter={this.handleSort}
+                      href="#!"
+                      className="red-text text-lighten-2"
+                      onClick={this.handleSearch2}
+                      onMouseOver={this.handleSort}
                     >
                       name
                     </a>
+                  </li>
+                  <li>
                     <a
-                      className="dropdown-item"
-                      onClick={this.handleSearch}
-                      onMouseEnter={this.handleSort}
+                      href="#!"
+                      className="red-text text-lighten-2"
+                      onClick={this.handleSearch2}
+                      onMouseOver={this.handleSort}
                     >
                       skill
                     </a>
+                  </li>
+                  <li>
                     <a
-                      className="dropdown-item"
-                      onClick={this.handleSearch}
-                      onMouseEnter={this.handleSort}
+                      href="#!"
+                      className="red-text text-lighten-2"
+                      onClick={this.handleSearch2}
+                      onMouseOver={this.handleSort}
                     >
                       dateupdated
                     </a>
-                  </div> */}
-                {/* </div> */}
-                <a class='dropdown-trigger btn red lighten-2 white-text' href='#' data-target='dropdown2'>Sort By</a>
-                <ul id='dropdown2' class='dropdown-content'>
-                  <li><a href="#!" className="red-text text-lighten-2" onClick={this.handleSearch}
-                    onMouseOver={this.handleSort}>name</a></li>
-                  <li><a href="#!" className="red-text text-lighten-2" onClick={this.handleSearch}
-                    onMouseOver={this.handleSort}>skill</a></li>
-                  <li><a href="#!" className="red-text text-lighten-2" onClick={this.handleSearch}
-                    onMouseOver={this.handleSort}>dateupdated</a></li>
+                  </li>
                 </ul>
               </div>
               <div className="col s12 m6 center">
-                <a class='dropdown-trigger btn red lighten-2 white-text' href='#' data-target='dropdown1'>Order</a>
-                <ul id='dropdown1' class='dropdown-content'>
-                  <li><a href="#!" className="red-text text-lighten-2" onClick={this.handleSearch}
-                    onMouseOver={this.handleOrder}>ASC</a></li>
-                  <li><a href="#!" className="red-text text-lighten-2" onClick={this.handleSearch}
-                    onMouseOver={this.handleOrder}>DESC</a></li>
+                <a
+                  class="dropdown-trigger btn red lighten-2 white-text"
+                  href="#"
+                  data-target="dropdown1"
+                >
+                  Order
+                </a>
+                <ul id="dropdown1" class="dropdown-content">
+                  <li>
+                    <a
+                      href="#!"
+                      className="red-text text-lighten-2"
+                      onClick={this.handleSearch2}
+                      onMouseOver={this.handleOrder}
+                    >
+                      ASC
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#!"
+                      className="red-text text-lighten-2"
+                      onClick={this.handleSearch2}
+                      onMouseOver={this.handleOrder}
+                    >
+                      DESC
+                    </a>
+                  </li>
                 </ul>
               </div>
             </div>
           </div>
         </section>
-        <div className="card-list">
-          {this.state.engineers.map(engineer => {
-            return (
-              // onclick
-              <div
-                onClick={this.getProfile}
-                onMouseOver={this.getUserId}
-                key={engineer.id}
-                name={engineer.id}
-              >
-                <div className="cards" name={engineer.id}>
-                  <div className="black-box" name={engineer.id}></div>
-                  <div className="text-inside" name={engineer.id}>
-                    <p className="name" name={engineer.id}>
-                      {engineer.Name}
-                    </p>
-                    <p name={engineer.id}>{engineer.Description}</p>
-                    <span className="mb-3" name={engineer.id}>
-                      <FontAwesomeIcon
-                        style={{ color: "#34abeb" }}
-                        icon={faArrowAltCircleDown}
-                        name={engineer.id}
-                      />
-                      <p className="ml-1" name={engineer.id}>
-                        {engineer.total_project} Projects
-                      </p>
-                      <FontAwesomeIcon
-                        className="ml-3"
-                        style={{ color: "yellow" }}
-                        icon={faStar}
-                        name={engineer.id}
-                      />
-                      <p className="ml-1" name={engineer.id}>
-                        {`${engineer.success_rate || 0}% Success Rate`}
-                      </p>
-                    </span>
-                    <div className="skills" name={engineer.id}>
-                      <p name={engineer.id}>Skills:</p>
-                      <p className="overflow-test" name={engineer.id}>
-                        {engineer.Skill}
-                      </p>
-                    </div>
-                  </div>
-                  <img
-                    onClick={this.getProfile}
-                    onMouseOver={this.getUserId}
-                    className="image-home"
-                    src={
-                      this.state.image[
-                        Math.floor(Math.random() * this.state.image.length)
-                      ]
-                    }
-                    name={engineer.id}
-                  />
-                </div>
-              </div>
-            );
-          })}
+        <div className="card-list mb-2">
+          <Card user={this.state.user} getProfile={this.getProfile} getUserId={this.getUserId} engineerList={this.state.engineers}/>
         </div>
+        <section id="change-page" className="change-page">
+          <div className="row">
+            <div className="col s12 d-flex flex-direction-row justify-content-center">
+              <Pagination prevPage={this.previousPage} nextPage={this.nextPage} totalData={this.state.totalData} page={this.state.page} pages={this.state.pages}/>
+            </div>
+          </div>
+        </section>
       </div>
     );
   }
 }
 
-export default HomePage;
+const mapStateToProps = state => {
+  return {
+    user: state.getUser,
+    searchUser: state.searchUser,
+    homeCompany: state.redirectNavbar.homeCompany,
+    
+   profileCompany: state.redirectNavbar.profileCompany
+  };
+};
+
+export default connect(mapStateToProps)(HomePage);

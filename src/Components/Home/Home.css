@@ -1,9 +1,30 @@
 .home {
-  /* background-image: linear-gradient(216.6deg, #F1C9EC 1.53%, rgba(255, 255, 255, 0) 81.18%) ; */
-  background-image: url('../../Assets/img/photo-1574964557843-c6aae0c12946.jpeg');
+  background-image: linear-gradient(
+    39deg,
+    rgba(255, 105, 79, 1) 8%,
+    rgba(233, 128, 143, 1) 53%,
+    rgba(244, 95, 120, 1) 95%
+  );
   background-repeat: no-repeat;
-  background-color: #AB84C8;
+
   height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: #c33764; /* fallback colour. Make sure this is just one solid colour. */
+  background: -webkit-linear-gradient(
+    39deg,
+    rgba(255, 105, 79, 0.8) 8%,
+    rgba(233, 128, 143, 0.8) 53%,
+    rgba(244, 95, 120, 0.8) 95%
+  ),
+    url("https://bit.ly/2rlzaXi");
+  background: linear-gradient(
+    39deg,
+    rgba(255, 105, 79, 0.8) 8%,
+    rgba(233, 128, 143, 0.8) 53%,
+    rgba(244, 95, 120, 0.8) 95%
+  ),
+    url("https://bit.ly/2rlzaXi"); /* The least supported option. */
 }
 
 .content {
@@ -20,22 +41,24 @@
   justify-content: center;
   align-items: center;
 }
-.home .content .company h2, .home .content .engineer h2 {
+.home .content .company h2,
+.home .content .engineer h2 {
   display: flex;
   margin: auto;
 }
 
-.home .content .engineer, .home .content .company {
+.home .content .engineer,
+.home .content .company {
   display: flex;
-  height: 75px;
-  width: 250px;
+  height: 40px;
+  width: 150px;
   border: none;
   border-radius: 10px;
-  color: white  ;
+  color: white;
   font-weight: 800;
-  background-color:#AB84C8;
-  
-  box-shadow: 5px 1px 15px black
+  background-color: rgb(230, 153, 118);
+
+  /* box-shadow: 2px 1px 3px black; */
 }
 
 .home .content h1 {
@@ -43,6 +66,7 @@
   justify-content: center;
 }
 
-.home .content .engineer:hover , .home .content .company:hover {
-  background-color: blueviolet;
+.home .content .engineer:hover,
+.home .content .company:hover {
+  background-color: rgb(236, 138, 93);
 }

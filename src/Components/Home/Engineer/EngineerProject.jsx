@@ -1,7 +1,11 @@
 import React, { Component } from "react";
-import axios from "axios";
-import M from "materialize-css";
+import Swal from 'sweetalert2'
 import Navbar from "../../Navbar";
+import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import { getProjectEngineer } from "../../../Redux/Actions/Engineer/Home/Project/getProjectEngineer";
+import { updateProjectEngineer } from "../../../Redux/Actions/Engineer/Home/Project/updateProjectEngineer";
+import { updateIsStatusEngineer1 } from "../../../Redux/Actions/Engineer/Home/Project/updateIsStatusEngineer1";
 
 class EngineerProject extends Component {
   state = {
@@ -11,74 +15,66 @@ class EngineerProject extends Component {
     id_project: ""
   };
 
-  getStatus = () => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(
-          localStorage.getItem("accessToken")
-        )}`
-      }
-    };
-
-    axios
-      .get("http://localhost:5000/engineer/project", config)
-      .then(response => {
-        console.log(response);
-        const data = response.data;
-        this.setState({
-          ...this.state,
-          data: Object.values(data)
-        });
-        console.log("data", this.state.data);
-      })
-      .catch(err => {
-        console.log(err);
+  getStatus = async () => {
+    try {
+      await this.props.dispatch(getProjectEngineer());
+      this.setState({
+        ...this.state,
+        data: Object.values(this.props.projectEngineer.data)
       });
-  };
-
-  updateStatus = () => {
-    axios({
-      method: "patch",
-      url: `http://localhost:5000/engineer/status/${this.state.id}`,
-      params: {
-        is_accept: this.state.is_accept
-      },
-      headers: {
-        Authorization: `Bearer ${JSON.parse(
-          localStorage.getItem("accessToken")
-        )}`
-      }
-    })
-      .then(result => {
-        console.log(result);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-    if (this.state.is_accept === 1) {
-      axios({
-        method: "patch",
-        url: `http://localhost:5000/company/project/${this.state.id_project}`,
-        params: {
-          status: "Success"
-        },
-        headers: {
-          Authorization: `Bearer ${JSON.parse(
-            localStorage.getItem("accessToken")
-          )}`
-        }
-      })
-        .then(result => {
-          console.log(result);
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      console.log(this.state.data)
+    } catch(error) {
+      console.log(error)
     }
   };
+
+  updateStatus = async () => {
+    try {
+      this.props.dispatch(updateProjectEngineer(this.state.id, this.state.is_accept))
+    } catch (error) {
+      console.log(error)
+    }    
+    if (this.state.is_accept === 1) {
+      try {
+        this.props.dispatch(updateIsStatusEngineer1(this.state.id_project))
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  };
+
+  redirectHomeEng = () => {
+    if (this.props.homeEngineer) {
+      return <Redirect to="/engineer/home" />;
+    }
+  };
+
+  redirectProfileEng = () => {
+    if (this.props.profileEngineer) {
+      return <Redirect to="/engineer/profile" />;
+    }
+  };
+
   handleSent = async () => {
-    const updateProject = await this.updateStatus();
-    this.getStatus();
+    Swal.fire({
+      title: 'Are you sure?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    }).then(async (result) => {
+      if (result.value) {
+        await Swal.fire(
+          'Success!',
+          'Your task has been sent',
+          'success'
+        )
+        await this.updateStatus();
+        window.location.reload()
+      }
+    })
+    
   };
 
   componentDidMount() {
@@ -89,6 +85,8 @@ class EngineerProject extends Component {
     return (
       <>
         <section id="navbar-list" className="navbar-list">
+          {this.redirectHomeEng()}
+          {this.redirectProfileEng()}
           <div className="row">
             <div className="col s12">
               <Navbar />
@@ -160,5 +158,12 @@ class EngineerProject extends Component {
     );
   }
 }
+const mapStateToProps = state => {
+  return {
+    homeEngineer: state.redirectNavbar.homeEngineer,
+    profileEngineer: state.redirectNavbar.profileEngineer,
+    projectEngineer: state.getProjectEngineer.projectEngineer
+  };
+};
 
-export default EngineerProject;
+export default connect(mapStateToProps)(EngineerProject);

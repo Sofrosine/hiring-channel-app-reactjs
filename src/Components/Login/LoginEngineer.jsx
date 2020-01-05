@@ -16,9 +16,7 @@ import qs from "querystring";
 import Swal from "sweetalert2";
 import { Redirect } from "react-router-dom";
 
-
 class LoginEngineer extends Component {
-
   state = {
     email: "",
     password: "",
@@ -46,7 +44,7 @@ class LoginEngineer extends Component {
           }
         }
       )
-      .then( async result => {
+      .then(async result => {
         if (
           result.data === "Your email is not valid" ||
           result.data === "Your password is not valid "
@@ -65,23 +63,18 @@ class LoginEngineer extends Component {
               password: this.state.password
             }
           }).then(({ data }) => {
-            const { token, id_engineer } = data.data
-            localStorage.setItem('id_engineer', JSON.stringify(id_engineer))
-            console.log(token)
-            localStorage.setItem('accessToken', JSON.stringify(token))
-            console.log(localStorage.getItem('accessToken'))
-          })
+            const { token, id_engineer } = data.data;
+            localStorage.setItem("id_engineer", JSON.stringify(id_engineer));
+            console.log(token);
+            localStorage.setItem("accessToken", JSON.stringify(token));
+            console.log(localStorage.getItem("accessToken"));
+          });
           Swal.fire({
             title: "Success",
             text: "Successfully Registered",
             icon: "success"
           });
-          // this.setState({
-          //   email: "",
-          //   password: ""
-          // });
-          this.props.history.push('/engineer/insert')
-          
+          this.props.history.push("/engineer/insert");
         }
       })
       .catch(err => {
@@ -103,21 +96,23 @@ class LoginEngineer extends Component {
         password: this.state.password
       }
     })
-      .then(async ({data}) => {
+      .then(async ({ data }) => {
         console.log(data);
-        if (data.message === "Password is incorrect!" || data.message === "Email or password is incorrect!") {
+        if (
+          data.message === "Password is incorrect!" ||
+          data.message === "Email or password is incorrect!"
+        ) {
           Swal.fire({
             title: `${data.message}`,
             text: "Please insert the valid value",
             icon: "warning"
           });
-        }
-        else {
-          const { token, id_engineer } = data.data
-          localStorage.setItem('id_engineer', JSON.stringify(id_engineer))
-          console.log(token)
-          localStorage.setItem('accessToken', JSON.stringify(token))
-          console.log(localStorage.getItem('accessToken'))
+        } else {
+          const { token, id_engineer } = data.data;
+          localStorage.setItem("id_engineer", JSON.stringify(id_engineer));
+          console.log(token);
+          localStorage.setItem("accessToken", JSON.stringify(token));
+          console.log(localStorage.getItem("accessToken"));
           const swal = await Swal.fire({
             title: "Login Success",
             icon: "success"
@@ -126,9 +121,7 @@ class LoginEngineer extends Component {
             ...this.state,
             redirectHome: true
           });
-          
         }
-        
       })
       .catch(err => {
         console.log(err);
@@ -147,87 +140,109 @@ class LoginEngineer extends Component {
   };
 
   checkToken = () => {
-    if (localStorage.getItem('id_engineer')) {
+    if (localStorage.getItem("id_engineer")) {
       return this.setState({
         ...this.state,
         redirectHome: true
-      })
+      });
     }
-  }
+  };
 
-  componentWillMount () {
-    this.checkToken()     
+  componentWillMount() {
+    this.checkToken();
   }
 
   render() {
     return (
-      <div className="login">
-        <div className="login-left">
-          <div className="white-logo">
-            <img src={whiteLogo}></img>
-          </div>
-          <div className="vector-logo">
-            <img src={vectorLogo}></img>
-          </div>
-          <div className="description">
-            <h2>Hire expert freelancers for any job, online</h2>
-            <p>
-              Millions of small business use Freelancer to turn their ideas into
-              reality.
-            </p>
-          </div>
-        </div>
-        <div className="login-right">
-          <div className="login-text">
-            <h1 className="grey-text text-darken-2">Login / Register as Engineer</h1>
-            <Link to="/">
-              <FontAwesomeIcon className="fa-lg" icon={faHome} />
-            </Link>
-          </div>
-          <div className="form">
-            <form>
-              <div className="input">
-                <div className="form-group">
-                  <label htmlFor="email" className="font-weight-bold">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="input email.."
-                    onChange={this.handleOnChange}
-                    value={this.state.email}
-                    className="form-control"
-                  />
+      <>
+        <section id="login-page" className="login-page">
+          <div className="row">
+            <div className="col s12 m7">
+              <div className="login-left">
+                <div className="white-logo">
+                  <img src={whiteLogo}></img>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="password" className="font-weight-bold">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="input password..."
-                    onChange={this.handleOnChange}
-                    value={this.state.password}
-                    className="form-control"
-                  />
+                <div className="vector-logo">
+                  <img src={vectorLogo}></img>
                 </div>
-                <div className="forgotPassword">
-                  <a href="#">Forgot Password?</a>
+                <div className="description">
+                  <h2>Hire expert freelancers for any job, online</h2>
+                  <p>
+                    Millions of small business use Freelancer to turn their
+                    ideas into reality.
+                  </p>
                 </div>
               </div>
-              <div className="button">
-                {this.redirectHome()}
-                <button className="buttonLogin" onClick={this.handleSubmitLogin}>Login</button>
-                <button className="buttonRegister" onClick={this.handleSubmitRegister}>Register</button>
+            </div>
+            <div className="row">
+              <div className="col s12 m5">
+                <div className="login-right">
+                  <div className="login-text">
+                    <h1 className="grey-text text-darken-2">
+                      Login / Register as Engineer
+                  </h1>
+                    <Link to="/">
+                      <FontAwesomeIcon className="fa-lg" icon={faHome} />
+                    </Link>
+                  </div>
+                  <div className="form">
+                    <form>
+                      <div className="input">
+                        <div className="form-group">
+                          <label htmlFor="email" className="font-weight-bold">
+                            Email
+                        </label>
+                          <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="input email.."
+                            onChange={this.handleOnChange}
+                            value={this.state.email}
+                            className="form-control"
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="password" className="font-weight-bold">
+                            Password
+                        </label>
+                          <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="input password..."
+                            onChange={this.handleOnChange}
+                            value={this.state.password}
+                            className="form-control"
+                          />
+                        </div>
+                        <div className="forgotPassword">
+                          <a href="#">Forgot Password?</a>
+                        </div>
+                      </div>
+                      <div className="button">
+                        {this.redirectHome()}
+                        <button
+                          className="buttonLogin red lighten-2"
+                          onClick={this.handleSubmitLogin}
+                        >
+                          Login
+                      </button>
+                        <button
+                          className="buttonRegister"
+                          onClick={this.handleSubmitRegister}
+                        >
+                          Register
+                      </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
               </div>
-            </form>
-          </div>
-        </div>
-      </div>
+            </div>
+            </div>
+        </section>
+      </>
     );
   }
 }

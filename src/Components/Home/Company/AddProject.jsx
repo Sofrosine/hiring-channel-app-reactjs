@@ -1,7 +1,13 @@
-import React, {Component} from 'react'
-import axios from 'axios'
-import Navbar from '../../Navbar'
-
+import React, { Component } from "react";
+import axios from "axios";
+import Navbar from "../../Navbar";
+import Swal from 'sweetalert2'
+import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
+import { getListProject } from "../../../Redux/Actions/Company/ListProject/getListProject";
+import { getProfileAddProject } from "../../../Redux/Actions/Company/AddProject/getProfileAddProject";
+import { updateAddProject } from "../../../Redux/Actions/Company/AddProject/updateAddProject";
+import { insertAddProject } from "../../../Redux/Actions/Company/AddProject/insertAddProject";
 
 class AddProject extends Component {
   state = {
@@ -10,123 +16,93 @@ class AddProject extends Component {
     id_project: ""
   };
 
-  getStatus = () => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(
-          localStorage.getItem("accessToken")
-        )}`
-      }
-    };
-
-    axios
-      .get("http://localhost:5000/company/getProject", config)
-      .then(response => {
-        console.log(response);
-        const data = response.data;
-        this.setState({
-          ...this.state,
-          data: Object.values(data)
-        });
-        console.log("data", this.state.data);
-      })
-      .catch(err => {
-        console.log(err);
+  getStatus = async () => {
+    try {
+      await this.props.dispatch(getListProject());
+      this.setState({
+        ...this.state,
+        data: Object.values(this.props.projectList.data)
       });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  getProfile = e => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(
-          localStorage.getItem("accessToken")
-        )}`
-      }
-    };
-    axios
-      .get(
-        `http://localhost:5000/engineer/user/${this.props.match.params.userId}`,
-        config
-      )
-      .then(result => {
-        console.log(result);
-        // console.log(result.data);
-        const data = result.data;
-        this.setState({
-          ...this.state,
-          profile: Object.values(data[0])
-        });
-        console.log(this.state.profile);
-        // console.log(this.state.profile)
-      })
-      .catch(err => {
-        console.log(err);
-      });
+  getProfile = async () => {
+    await this.props.dispatch(
+      getProfileAddProject(this.props.match.params.userId)
+    );
+    this.setState({
+      ...this.state,
+      profile: Object.values(this.props.profileData.data[0])
+    });
   };
 
   updateProject = async () => {
-    
-    axios({
-      method: "patch",
-      url: "http://localhost:5000/company/updateProject",
-      params: {
+    try {
+      const data = {
         id_project: this.state.id_project,
         id_engineer: this.state.profile[7],
-        status: 'Pending'
-      },
-      headers: {
-        Authorization: `Bearer ${JSON.parse(
-          localStorage.getItem("accessToken")
-        )}`
+        status: "Pending"
+      };
+      this.props.dispatch(updateAddProject(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  insertProject = async () => {
+    try {
+      const data = {
+        id_project: this.state.id_project,
+        id_engineer: this.state.profile[7]
+      };
+      this.props.dispatch(insertAddProject(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  redirectHomeCompany = () => {
+    if (this.props.homeCompany) {
+      return <Redirect to="/company/home" />;
+    }
+  };
+
+  hire = async () => {
+    Swal.fire({
+      title: 'Are you sure?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    }).then( async (result) => {
+      if (result.value) {
+        await Swal.fire(
+          'Success!',
+          'Your offer has been sent',
+          'success'
+        ) 
+        await this.updateProject();
+        await this.insertProject();
+        window.location.reload()
       }
     })
-      .then(result => {
-        console.log(result);
-      })
-      .catch(err => {
-        console.log(err);
-      });
     
   };
 
-  insertProject = () => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(
-          localStorage.getItem("accessToken")
-        )}`
-      }
-    };
-    const data = {
-      id_project: this.state.id_project,
-      id_engineer: this.state.profile[7]
-    };
-    axios
-      .post("http://localhost:5000/company/insertProject", data, config)
-      .then(result => {
-        console.log(result);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }
-
-   hire = async () => {
-    await this.updateProject()
-    this.insertProject()
-   }
-
   componentDidMount() {
-    this.getStatus()
+    this.getStatus();
     this.getProfile();
   }
-
 
   render() {
     return (
       <>
+        {this.redirectHomeCompany()}
         <section id="navbar-list" className="navbar-list">
-          <Navbar/>
+          <Navbar />
         </section>
         <section id="project-list-company" className="project-list-company">
           <div className="container">
@@ -194,4 +170,13 @@ class AddProject extends Component {
   }
 }
 
-export default AddProject
+const mapStateToProps = state => {
+  return {
+    homeCompany: state.redirectNavbar.homeCompany,
+    // profileCompany: state.redirectNabar.prfileCompany
+    projectList: state.getListProject.projectList,
+    profileData: state.getProfileAddProject.profileData
+  };
+};
+
+export default connect(mapStateToProps)(AddProject);

@@ -10,8 +10,8 @@
   height: 100vh;
   flex: 3;
   flex-direction: column;
-  background-image: linear-gradient(216.6deg, #F1C9EC 1.53%, rgba(255, 255, 255, 0) 81.18%);
-  background-color: #AB84C8;
+  background-image: linear-gradient(39deg, rgba(255,105,79,1) 8%, rgba(233,128,143,1) 53%, rgba(244,95,120,1) 95%);
+  background-color: rgb(255,105,79);
 }
 
 .white-logo img {
@@ -66,7 +66,7 @@
 }
 
 .login-right .login-text a {
-  color: blueviolet;
+  color: rgb(255,105,79);
   align-self: center;
   margin-right: 10%;
 }
@@ -112,23 +112,24 @@
   border: none;
   border-radius: 10px;
   color: white  ;
-  background-color:#AB84C8;
 }
 
-.button .buttonLogin:hover {
-  background-color: blueviolet;
-}
 
 .button .buttonRegister {
   height: 40px;
-  border: 1px solid #AB84C8;
+  border: 1px solid rgba(244,95,120,1);
   border-radius: 10px;
-  color: #AB84C8  ;
+  color: rgba(244,95,120,1)  ;
   background-color:white;
 }
 
 .button .buttonRegister:hover {
   color: white;
-  background-color: blueviolet ;
+  background-color: rgb(221, 102, 102) ;
+}
+
+#login-page .row {
+  margin-right: 0!important;
+  margin-bottom: 0!important
 }
 

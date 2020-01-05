@@ -3,6 +3,8 @@ import axios from "axios";
 import M from "materialize-css";
 import Navbar from "../../Navbar";
 import Swal from 'sweetalert2'
+import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 
 class CompanyProject extends Component {
   state = {
@@ -35,22 +37,22 @@ class CompanyProject extends Component {
       });
   };
 
-  handleProject = (e) => {
+  handleProject = e => {
     this.setState({
       ...this.state,
       project_name: e.target.value
-    })
-    console.log(this.state.project_name)
-  }
+    });
+    console.log(this.state.project_name);
+  };
 
   addProject = () => {
     const id_company = localStorage.getItem("id_company");
     const data = {
       project_name: this.state.project_name,
       id_company: id_company
-    }
+    };
     axios
-      .post('http://localhost:5000/company/addProject', data, {
+      .post("http://localhost:5000/company/addProject", data, {
         headers: {
           Authorization: `Bearer ${JSON.parse(
             localStorage.getItem("accessToken")
@@ -58,7 +60,7 @@ class CompanyProject extends Component {
         }
       })
       .then(result => {
-        console.log(result)
+        console.log(result);
         Swal.fire({
           title: "Data Inserted",
           icon: "success"
@@ -66,22 +68,35 @@ class CompanyProject extends Component {
         this.setState({
           ...this.state,
           project_name: ""
-        })
+        });
       })
       .catch(err => {
-        console.log(err)
-      })
-  }
+        console.log(err);
+      });
+  };
+
+  redirectHomeCompany = () => {
+    if (this.props.homeCompany) {
+      return <Redirect to="/company/home" />;
+    }
+  };
+
+  redirectHomeProfile = () => {
+    if (this.props.profileCompany) {
+      return <Redirect to="/company/profile" />;
+    }
+  };
 
   componentDidMount() {
     this.getStatus();
     M.AutoInit();
-    
   }
 
   render() {
     return (
       <>
+      {this.redirectHomeProfile()}
+      {this.redirectHomeCompany()}
         <Navbar />
         <div className="row">
           <div className="container">
@@ -130,40 +145,16 @@ class CompanyProject extends Component {
             </div>
           </div>
         </section>
-        {/* <section id="add-project" className="add-project">
-          <div className="row">
-            <div className="container">
-              <div className="col">
-                <a
-                  class="waves-effect waves-light btn modal-trigger red lighten-1 white-text"
-                  href="#modal1"
-                >
-                  Add Project
-                </a>
-
-                <div id="modal1" class="modal bottom-sheet">
-                  <div class="modal-content">
-                    <div className="row">
-                      <div className="input-field col s12">
-                        <i class="material-icons prefix">work</i>
-                        <input value={this.state.project_name} onChange={this.handleProject} id="icon_prefix" type="text" class="validate" required/>
-                        <label for="icon_prefix">Project Name</label>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col s12 center">
-                        <a onClick={this.addProject} class="waves-effect waves-light btn red lighten-1 white-text">Add</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section> */}
       </>
     );
   }
 }
 
-export default CompanyProject;
+const mapStateToProps = state => {
+  return {
+    homeCompany: state.redirectNavbar.homeCompany,
+    profileCompany: state.redirectNavbar.profileCompany
+  };
+};
+
+export default connect(mapStateToProps)(CompanyProject);

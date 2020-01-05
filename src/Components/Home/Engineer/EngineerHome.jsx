@@ -1,7 +1,14 @@
 import React, { Component } from "react";
-import axios from "axios";
-import M from "materialize-css";
+import Swal from 'sweetalert2'
 import Navbar from "../../Navbar";
+import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
+import { updateEngineerHome } from "../../../Redux/Actions/Engineer/Home/updateEngineerHome";
+import { deleteEngineerHome } from "../../../Redux/Actions/Engineer/Home/deleteEngineerHome";
+import { getStatusEngineer } from "../../../Redux/Actions/Engineer/Home/Status/getStatusEngineer";
+import { updateStatusEngineer } from "../../../Redux/Actions/Engineer/Home/Status/updateStatusEngineer";
+import { updateIsStatusEngineer0 } from "../../../Redux/Actions/Engineer/Home/Status/updateIsStatusEngineer0";
+import { updateIsStatusEngineer2 } from "../../../Redux/Actions/Engineer/Home/Status/updateIsStatusEngineer2";
 
 class EngineerHome extends Component {
   state = {
@@ -11,111 +18,136 @@ class EngineerHome extends Component {
     confirmButton: true,
     is_accept: "",
     id: "",
-    id_project: ""
+    id_project: "",
+    id_engineer: ""
   };
 
-  getStatus = () => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(
-          localStorage.getItem("accessToken")
-        )}`
-      }
-    };
-
-    axios
-      .get("http://localhost:5000/engineer/status", config)
-      .then(response => {
-        console.log(response);
-        const data = response.data;
-        this.setState({
-          ...this.state,
-          data: Object.values(data)
-        });
-        console.log("data", this.state.data);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+  updateProject = async () => {
+    try {
+      const body = {
+        status: "No Status"
+      };
+      const update = await this.props.dispatch(
+        updateEngineerHome(this.state.id_project, body)
+      );
+      console.log(update);
+      this.getStatus();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  updateStatus = () => {
-    axios({
-      method: "patch",
-      url: `http://localhost:5000/engineer/status/${this.state.id}`,
-      params: {
-        is_accept: this.state.is_accept
-      },
-      headers: {
-        Authorization: `Bearer ${JSON.parse(
-          localStorage.getItem("accessToken")
-        )}`
-      }
-    })
-      .then(result => {
-        console.log(result);
-      })
-      .catch(err => {
-        console.log(err);
+  cancelProject = async () => {
+    try {
+      this.props.dispatch(
+        deleteEngineerHome(this.state.id_project, this.state.id_engineer)
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  getStatus = async () => {
+    try {
+      const status = await this.props.dispatch(getStatusEngineer());
+      console.log(status);
+      this.setState({
+        ...this.state,
+        data: Object.values(this.props.statusEngineer.data)
       });
+    } catch (error) {
+      console.log("oops", error);
+    }
+  };
+
+  updateStatus = async () => {
+    try {
+      this.props.dispatch(
+        updateStatusEngineer(this.state.id, this.state.is_accept)
+      );
+    } catch (error) {
+      console.log(error);
+    }
     if (this.state.is_accept === 0) {
-      axios({
-        method: "patch",
-        url: `http://localhost:5000/company/project/${this.state.id_project}`,
-        params: {
-          status: "Pending"
-        },
-        headers: {
-          Authorization: `Bearer ${JSON.parse(
-            localStorage.getItem("accessToken")
-          )}`
-        }
-      })
-        .then(result => {
-          console.log(result);
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      try {
+        this.props.dispatch(updateIsStatusEngineer0(this.state.id_project));
+      } catch (error) {
+        console.log(error);
+      }
     } else if (this.state.is_accept === 2) {
-      axios({
-        method: "patch",
-        url: `http://localhost:5000/company/project/${this.state.id_project}`,
-        params: {
-          status: "On Process"
-        },
-        headers: {
-          Authorization: `Bearer ${JSON.parse(
-            localStorage.getItem("accessToken")
-          )}`
-        }
-      })
-        .then(result => {
-          console.log(result);
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      try {
+        this.props.dispatch(updateIsStatusEngineer2(this.state.id_project));
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
   handleReject = async e => {
-    const updateAccept = await this.setState({
-      ...this.state,
-      confirmButton: false,
-      rejected: true,
-      is_accept: 0
-    });
-    this.updateStatus();
+    Swal.fire({
+      title: 'Are you sure?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    }).then(async (result) => {
+      if (result.value) {
+        await Swal.fire(
+          'Success!',
+          'The offer has been rejected!',
+          'success'
+        )
+        const updateAccept = await this.setState({
+          ...this.state,
+          confirmButton: false,
+          rejected: true,
+          is_accept: 0
+        });
+        this.reject();
+      }
+    })
+    
+    
   };
+
   handleApprove = async e => {
-    const updateAccept = await this.setState({
-      ...this.state,
-      confirmButton: false,
-      rejected: false,
-      is_accept: 2
-    });
-    this.updateStatus();
+    Swal.fire({
+      title: 'Are you sure?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    }).then(async (result) => {
+      if (result.value) {
+        await Swal.fire(
+          'Success!',
+          'Your offer has been sent',
+          'success'
+        )
+        const updateAccept = await this.setState({
+          ...this.state,
+          confirmButton: false,
+          rejected: false,
+          is_accept: 2
+        });
+        await this.updateStatus();
+        window.location.reload()
+      }
+    })
+    
+  };
+
+  reject = async () => {
+    await this.cancelProject();
+    this.updateProject();
+  };
+
+  redirectProfileEng = () => {
+    if (this.props.profileEngineer) {
+      return <Redirect to="/engineer/profile" />;
+    }
   };
 
   componentDidMount() {
@@ -125,6 +157,7 @@ class EngineerHome extends Component {
   render() {
     return (
       <>
+        {this.redirectProfileEng()}
         <section id="navbar-list" className="navbar-list">
           <div className="row">
             <div className="col s12">
@@ -166,8 +199,7 @@ class EngineerHome extends Component {
                             data.status === "Success" ? (
                               <p className="green-text">Approved</p>
                             ) : (
-                              <>
-                                {this.state.confirmButton === true ? (
+                          
                                   <>
                                     <a
                                       class="btn-floating btn-medium pulse"
@@ -188,7 +220,8 @@ class EngineerHome extends Component {
                                         this.setState({
                                           ...this.state,
                                           id: data.id,
-                                          id_project: data.id_project
+                                          id_project: data.id_project,
+                                          id_engineer: data.id_engineer
                                         })
                                       }
                                       onClick={this.handleReject}
@@ -196,16 +229,8 @@ class EngineerHome extends Component {
                                       <i class="material-icons">close</i>
                                     </a>
                                   </>
-                                ) : (
-                                  <>
-                                    {this.state.rejected === true ? (
-                                      <p className="red-text">Rejected</p>
-                                    ) : (
-                                      <p className="green-text">Approved</p>
-                                    )}
-                                  </>
-                                )}
-                              </>
+                               
+                              
                             )}
                           </td>
                           <td>
@@ -232,21 +257,10 @@ class EngineerHome extends Component {
               <div className="col s12 center">
                 <a
                   onClick={() => this.props.history.push("/engineer/project")}
-                  className="waves-effect waves-light btn blue white-text"
+                  className="waves-effect waves-light btn red lighten-1 white-text"
                 >
                   {" "}
                   Go To Project Status
-                </a>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col s12 center">
-                <a
-                  onClick={() => this.props.history.push("/engineer/profile")}
-                  className="waves-effect waves-light btn green white-text"
-                >
-                  {" "}
-                  Go To Profile
                 </a>
               </div>
             </div>
@@ -257,4 +271,13 @@ class EngineerHome extends Component {
   }
 }
 
-export default EngineerHome;
+const mapStateToProps = state => {
+  return {
+    homeEngineer: state.redirectNavbar.homeEngineer,
+    profileEngineer: state.redirectNavbar.profileEngineer,
+    updateHomeEngineer: state.updateEngineerHome.updateHomeEngineer,
+    statusEngineer: state.getStatusEngineer.statusEngineer
+  };
+};
+
+export default connect(mapStateToProps)(EngineerHome);

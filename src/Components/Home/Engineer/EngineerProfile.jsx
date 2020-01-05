@@ -9,6 +9,10 @@ import BtnDelete from "../../../Assets/Button/BtnDelete";
 import BtnSkill from "../../../Assets/Button/BtnSkill";
 import Swal from "sweetalert2";
 import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import BtnUpdateM from "../../../Assets/Button/Modal/BtnUpdateM";
+import BtnUpdateMEngineer from "../../../Assets/Button/Modal/BtnUpdateMEngineer";
+import { getEngineer } from "../../../Redux/Actions/Engineer/getEngineer";
 
 class EngineerProfile extends Component {
   constructor(props) {
@@ -16,78 +20,62 @@ class EngineerProfile extends Component {
     this.state = { profile: [], redirectHome: false };
   }
 
-  getProfile = e => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(
-          localStorage.getItem("accessToken")
-        )}`
-      }
-    };
-    axios
-      .get("http://localhost:5000/engineer/profile", config)
-      .then(result => {
-        console.log(result);
-        const data = result.data;
-        this.setState({
-          ...this.state,
-          profile: Object.values(data[0])
-        });
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-
-  handleDelete = async e => {
-    e.preventDefault();
-    const config = {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(
-          localStorage.getItem("accessToken")
-        )}`
-      }
-    };
-    const id_engineer = localStorage.getItem("id_engineer");
-    const swal = await Swal.mixin({
-      customClass: {
-        confirmButton: "btn btn-success",
-        cancelButton: "btn btn-danger"
-      },
-      buttonsStyling: false
+  getProfile = async e => {
+    await this.props.dispatch(getEngineer());
+    const data = this.props.profileEngineer.data;
+    this.setState({
+      ...this.state,
+      profile: Object.values(data[0])
     });
-
-    swal
-      .fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes, delete it!",
-        cancelButtonText: "No, cancel!",
-        reverseButtons: true
-      })
-      .then(result => {
-        if (result.value) {
-          axios
-            .delete(`http://localhost:5000/engineer/${id_engineer}`, config)
-            .then(result => {
-              console.log(result);
-              this.props.history.push("/");
-              this.props.history.push("/engineer/home");
-            })
-            .catch(err => {
-              console.log(err);
-            });
-
-          swal.fire("Deleted!", "Your file has been deleted.", "success");
-        } else if (
-          result.dismiss === Swal.DismissReason.cancel
-        ) {
-          swal.fire("Cancelled", "Your file is safe :)", "error");
-        }
-      });
   };
+
+  // handleDelete = async e => {
+  //   e.preventDefault();
+  //   const config = {
+  //     headers: {
+  //       Authorization: `Bearer ${JSON.parse(
+  //         localStorage.getItem("accessToken")
+  //       )}`
+  //     }
+  //   };
+  //   const id_engineer = localStorage.getItem("id_engineer");
+  //   const swal = await Swal.mixin({
+  //     customClass: {
+  //       confirmButton: "btn btn-success",
+  //       cancelButton: "btn btn-danger"
+  //     },
+  //     buttonsStyling: false
+  //   });
+
+  //   swal
+  //     .fire({
+  //       title: "Are you sure?",
+  //       text: "You won't be able to revert this!",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonText: "Yes, delete it!",
+  //       cancelButtonText: "No, cancel!",
+  //       reverseButtons: true
+  //     })
+  //     .then(result => {
+  //       if (result.value) {
+  //         axios
+  //           .delete(`http://localhost:5000/engineer/${id_engineer}`, config)
+  //           .then(result => {
+  //             console.log(result);
+  //             this.props.history.push("/");
+  //             this.props.history.push("/engineer/home");
+  //           })
+  //           .catch(err => {
+  //             console.log(err);
+  //           });
+
+  //         swal.fire("Deleted!", "Your file has been deleted.", "success");
+  //       } else if (result.dismiss === Swal.DismissReason.cancel) {
+  //         swal.fire("Cancelled", "Your file is safe :)", "error");
+  //       }
+  //     });
+  // };
 
   redirectHome = () => {
     if (this.state.redirectHome) {
@@ -104,6 +92,12 @@ class EngineerProfile extends Component {
     }
   };
 
+  redirectHomeEng = () => {
+    if (this.props.homeEngineer) {
+      return <Redirect to="/engineer/home" />;
+    }
+  };
+
   componentWillMount() {
     this.checkToken();
   }
@@ -116,6 +110,7 @@ class EngineerProfile extends Component {
     return (
       <div>
         {this.redirectHome()}
+        {this.redirectHomeEng()}
         <section id="navbar-list" className="navbar-list">
           <div className="row">
             <div className="col s12">
@@ -124,19 +119,11 @@ class EngineerProfile extends Component {
           </div>
         </section>
         <section id="profile-data" className="profile-data">
-          <div className="container">
-            <div className="row">
-              <div className="col s12 m6 center">
-                  <Profile profile={this.state.profile} />
-              </div>
-              <div className="col s12 m6 d-flex flex-column align-self-center">
-                <BtnInsert
-                  onClick={() => this.props.history.push("/engineer/insert")}
-                />
-                <BtnUpdate
-                  onClick={() => this.props.history.push("/engineer/update")}
-                />
-                {/* <BtnDelete onClick={this.handleDelete} /> */}
+          <div className="row">
+            <div className="col s12 d-flex flex-column align-items-center">
+              <Profile profile={this.state.profile} />
+              <div className="mt-2 d-flex flex-row justify-content-center">
+                <BtnUpdateMEngineer profile={this.state.profile} />
                 <BtnSkill
                   onClick={() => this.props.history.push("/engineer/skill")}
                 />
@@ -149,4 +136,11 @@ class EngineerProfile extends Component {
   }
 }
 
-export default EngineerProfile;
+const mapStateToProps = state => {
+  return {
+    homeEngineer: state.redirectNavbar.homeEngineer,
+    profileEngineer: state.getEngineer.profileEngineer
+  };
+};
+
+export default connect(mapStateToProps)(EngineerProfile);

@@ -6,6 +6,12 @@ import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../../../Navbar";
+import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import { postSkill } from "../../../../Redux/Actions/Engineer/Edit Skill/postSkill";
+import { deleteSkill } from "../../../../Redux/Actions/Engineer/Edit Skill/deleteSkill";
+import { getSkill } from "../../../../Redux/Actions/Engineer/Edit Skill/getSkill";
+import { getProfileSkill } from "../../../../Redux/Actions/Engineer/Edit Skill/getProfileSkill";
 
 class EditSkill extends Component {
   state = {
@@ -27,24 +33,17 @@ class EditSkill extends Component {
       id_skill: Number(this.state.idSkill)
     };
 
-    axios
-      .post("http://localhost:5000/engineer/skill", data)
+    this.props
+      .dispatch(postSkill(data))
       .then(async result => {
-        const swal = await Swal.fire({
+        await Swal.fire({
           position: "middle",
           icon: "success",
           title: "Your data has been inserted",
           showConfirmButton: false,
           timer: 1000
         });
-        this.setState({
-          ...this.state,
-          oldSkill: "",
-          newSkill: ""
-        });
-        console.log(result);
-
-        this.getProfile()
+        this.getProfile();
       })
       .catch(err => {
         console.log(err);
@@ -57,88 +56,54 @@ class EditSkill extends Component {
       id_engineer: id_engineer,
       id_skill: this.state.idSkill
     };
-    const config = {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(
-          localStorage.getItem("accessToken")
-        )}`
-      }
-    };
-    axios
-      .delete(
-        `http://localhost:5000/engineer/skill/${data.id_engineer}/${data.id_skill}`,
-        {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("accessToken")
-            )}`
-          }
-        }
-      )
+    this.props
+      .dispatch(deleteSkill(data.id_engineer, data.id_skill))
       .then(async result => {
-        const swal = await Swal.fire({
+        await Swal.fire({
           position: "middle",
           icon: "success",
           title: "Your data has been deleted",
           showConfirmButton: false,
           timer: 1000
         });
-        this.setState({
-          ...this.state,
-          oldSkill: "",
-          newSkill: ""
-        });
-        console.log(result);
-        this.getProfile()
+        console.log("delete result", result);
+        this.getProfile();
       })
       .catch(err => {
         console.log(err);
       });
   };
 
-  listSkill = e => {
-    axios
-      .get("http://localhost:5000/skill")
-      .then(result => {
-        console.log(result);
-        const data = result.data.data;
-        this.setState({
-          ...this.state,
-          skillList: data
-        });
-        console.log(this.state.skillList);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-  getProfile = e => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(
-          localStorage.getItem("accessToken")
-        )}`
-      }
-    };
-    axios
-      .get("http://localhost:5000/engineer/profile", config)
-      .then(result => {
-        console.log(result);
-        const data = result.data;
-        this.setState({
-          ...this.state,
-          profile: Object.values(data[0])[8].split(",")
-        });
-        console.log("profile", this.state.profile);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+  listSkill = async e => {
+    await this.props.dispatch(getSkill());
+    this.setState({
+      skillList: this.props.skillData.data.data
+    });
   };
 
-  deleteHandle = async () => {
+  getProfile = async e => {
+    await this.props.dispatch(getProfileSkill());
+    const data = this.props.profileDataSkill.data
+    if(Object.values(data[0])[8] !== null) {
+      return this.setState({
+        profile: Object.values(data[0])[8].split(",")
+      });
+    }
+    
+    
+  };
 
-  }
+  redirectProfileEng = () => {
+    if (this.props.profileEngineer) {
+      return <Redirect to="/engineer/profile" />;
+    }
+  };
+
+  redirectHomeEng = () => {
+    if (this.props.homeEngineer) {
+      return <Redirect to="/engineer/home" />;
+    }
+  };
 
   componentDidMount() {
     this.listSkill();
@@ -148,6 +113,8 @@ class EditSkill extends Component {
   render() {
     return (
       <>
+        {this.redirectProfileEng()}
+        {this.redirectHomeEng()}
         <div className="row">
           <div className="col">
             <Navbar />
@@ -182,24 +149,38 @@ class EditSkill extends Component {
                         <td>{skill.Skill}</td>
                         {this.state.profile.includes(skill.Skill) ? (
                           <td>
-                            <a href="#" className="orange-text text-lighten-3" onMouseOver={() => {
-                              this.setState({
-                                ...this.state,
-                                idSkill: skill.id
-                              });
-                              console.log(this.state.idSkill)
-                            }} onClick={this.deleteSkill}>
+                            <a
+                              href="#"
+                              className="orange-text text-lighten-3"
+                              onMouseOver={() => {
+                                this.setState({
+                                  ...this.state,
+                                  idSkill: skill.id
+                                });
+                                console.log(this.state.idSkill);
+                              }}
+                              onClick={this.deleteSkill}
+                            >
                               <i class="material-icons">delete_sweep</i>
                             </a>
                           </td>
                         ) : (
-                            <td><a onMouseOver={() => {
-                              this.setState({
-                                ...this.state,
-                                idSkill: skill.id
-                              });
-                              console.log(this.state.idSkill)
-                            }} onClick={this.insertSkill} href="#" className="orange-text text-lighten-5"><i class="material-icons">library_add</i></a></td>
+                          <td>
+                            <a
+                              onMouseOver={() => {
+                                this.setState({
+                                  ...this.state,
+                                  idSkill: skill.id
+                                });
+                                console.log(this.state.idSkill);
+                              }}
+                              onClick={this.insertSkill}
+                              href="#"
+                              className="orange-text text-lighten-5"
+                            >
+                              <i class="material-icons">library_add</i>
+                            </a>
+                          </td>
                         )}
                       </tr>
                     </tbody>
@@ -225,52 +206,18 @@ class EditSkill extends Component {
             </div>
           </div>
         </div>
-
-        {/* <div className="formSkill">
-          <div className="form-insert">
-            <div className="text-input-skill">
-              <p>Insert Skill</p>
-            </div>
-            <div className="form-input-skill">
-              <input
-                onChange={this.handleChange}
-                type="number"
-                name="newSkill"
-                placeholder="Input your new id skill..."
-                value={this.state.newSkill}
-              />
-            </div>
-            <button onClick={this.insertSkill} className="btn btn-primary">
-              Insert
-            </button>
-          </div>
-          <div className="form-delete">
-            <div className="text-delete-skill">
-              <p>Delete Skill</p>
-            </div>
-            <div className="form-delete-skill">
-              <input
-                onChange={this.handleChange}
-                type="number"
-                name="oldSkill"
-                placeholder="Input your old id skill..."
-                value={this.state.oldSkill}
-              />
-            </div>
-            <button onClick={this.deleteSkill} className="btn btn-danger">
-              Delete
-            </button>
-          </div>
-
-          <FontAwesomeIcon
-            onClick={() => this.props.history.push("/engineer/home")}
-            className="home-icon fa-lg"
-            icon={faHome}
-          />
-        </div> */}
       </>
     );
   }
 }
 
-export default EditSkill;
+const mapStateToProps = state => {
+  return {
+    homeEngineer: state.redirectNavbar.homeEngineer,
+    profileEngineer: state.redirectNavbar.profileEngineer,
+    skillData: state.getSkill.skillData,
+    profileDataSkill: state.getProfileSkill.profileDataSkill
+  };
+};
+
+export default connect(mapStateToProps)(EditSkill);
