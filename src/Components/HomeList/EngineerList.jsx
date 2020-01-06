@@ -32,8 +32,8 @@ class EngineerList extends Component {
       }
     };
     axios
-      // .get("http://localhost:5000/engineer", config)
-      .get("https://hiring-channel-application.herokuapp.com/engineer", config)
+      .get("http://localhost:5000/engineer", config)
+      // .get("https://hiring-channel-application.herokuapp.com/engineer", config)
       .then(result => {
         console.log(result.data.data);
         const data = result.data.data;

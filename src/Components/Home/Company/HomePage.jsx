@@ -158,8 +158,8 @@ class HomePage extends Component {
       }
     };
     axios
-      // .get(`http://localhost:5000/engineer/user/${this.state.user}`, config)
-      .get(`https://hiring-channel-application.herokuapp.com/engineer/user/${this.state.user}`, config)
+      .get(`http://localhost:5000/engineer/user/${this.state.user}`, config)
+      // .get(`https://hiring-channel-application.herokuapp.com/engineer/user/${this.state.user}`, config)
       .then(result => {
         console.log(result);
         const data = result.data;

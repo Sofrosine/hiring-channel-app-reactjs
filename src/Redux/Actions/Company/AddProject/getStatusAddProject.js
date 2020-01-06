@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-// const URL_STRING = "http://localhost:5000/company/getProject"
-const URL_STRING = "https://hiring-channel-application.herokuapp.com/company/getProject"
+const URL_STRING = "http://localhost:5000/company/getProject"
+// const URL_STRING = "https://hiring-channel-application.herokuapp.com/company/getProject"
 
 export const getListProject = () => {
   return {

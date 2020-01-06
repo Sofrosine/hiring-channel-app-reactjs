@@ -32,20 +32,8 @@ class LoginEngineer extends Component {
   handleSubmitRegister = e => {
     e.preventDefault();
     axios
-      // .post(
-      //   "http://localhost:5000/engineer/register",
-      //   qs.stringify({
-      //     email: this.state.email,
-      //     password: this.state.password
-      //   }),
-      //   {
-      //     header: {
-      //       "Content-Type": "application/x-www-form-urlencoded"
-      //     }
-      //   }
-      // )
       .post(
-        "https://hiring-channel-application.herokuapp.com/engineer/register",
+        "http://localhost:5000/engineer/register",
         qs.stringify({
           email: this.state.email,
           password: this.state.password
@@ -56,6 +44,18 @@ class LoginEngineer extends Component {
           }
         }
       )
+      // .post(
+      //   "https://hiring-channel-application.herokuapp.com/engineer/register",
+      //   qs.stringify({
+      //     email: this.state.email,
+      //     password: this.state.password
+      //   }),
+      //   {
+      //     header: {
+      //       "Content-Type": "application/x-www-form-urlencoded"
+      //     }
+      //   }
+      // )
       .then(async result => {
         if (
           result.data === "Your email is not valid" ||
@@ -69,8 +69,8 @@ class LoginEngineer extends Component {
         } else {
           const storeToken = await axios({
             method: "get",
-            // url: "http://localhost:5000/engineer/login",
-            url: "https://hiring-channel-application.herokuapp.com/engineer/login",
+            url: "http://localhost:5000/engineer/login",
+            // url: "https://hiring-channel-application.herokuapp.com/engineer/login",
             params: {
               email: this.state.email,
               password: this.state.password
@@ -103,8 +103,8 @@ class LoginEngineer extends Component {
     e.preventDefault();
     axios({
       method: "get",
-      // url: "http://localhost:5000/engineer/login",
-      url: "https://hiring-channel-application.herokuapp.com/engineer/login",
+      url: "http://localhost:5000/engineer/login",
+      // url: "https://hiring-channel-application.herokuapp.com/engineer/login",
       params: {
         email: this.state.email,
         password: this.state.password
