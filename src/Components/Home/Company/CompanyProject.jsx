@@ -22,7 +22,8 @@ class CompanyProject extends Component {
     };
 
     axios
-      .get("http://localhost:5000/company/project", config)
+      // .get("http://localhost:5000/company/project", config)
+      .get("https://hiring-channel-application.herokuapp.com/company/project", config)
       .then(response => {
         console.log(response);
         const data = response.data;
@@ -52,7 +53,14 @@ class CompanyProject extends Component {
       id_company: id_company
     };
     axios
-      .post("http://localhost:5000/company/addProject", data, {
+      // .post("http://localhost:5000/company/addProject", data, {
+      //   headers: {
+      //     Authorization: `Bearer ${JSON.parse(
+      //       localStorage.getItem("accessToken")
+      //     )}`
+      //   }
+      // })
+      .post("https://hiring-channel-application.herokuapp.com/company/addProject", data, {
         headers: {
           Authorization: `Bearer ${JSON.parse(
             localStorage.getItem("accessToken")

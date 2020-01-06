@@ -27,8 +27,12 @@ class UserEngineer extends Component {
       }
     };
     axios
+      // .get(
+      //   `http://localhost:5000/engineer/user/${this.props.match.params.userId}`,
+      //   config
+      // )
       .get(
-        `http://localhost:5000/engineer/user/${this.props.match.params.userId}`,
+        `https://hiring-channel-application.herokuapp.com/engineer/user/${this.props.match.params.userId}`,
         config
       )
       .then(result => {

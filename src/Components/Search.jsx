@@ -36,7 +36,8 @@ class Search extends Component {
   handleSearch = (e) => {
     axios({
       method: "get",
-      url: "http://localhost:5000/engineer/filter",
+      // url: "http://localhost:5000/engineer/filter",
+      url: "https://hiring-channel-application.herokuapp.com/engineer/filter",
       params: {
         name: this.state.name,
         skill: this.state.skill

@@ -33,8 +33,20 @@ class LoginCompany extends Component {
   handleSubmitRegister = e => {
     e.preventDefault();
     axios
+      // .post(
+      //   "http://localhost:5000/company/register",
+      //   qs.stringify({
+      //     email: this.state.email,
+      //     password: this.state.password
+      //   }),
+      //   {
+      //     header: {
+      //       "Content-Type": "application/x-www-form-urlencoded"
+      //     }
+      //   }
+      // )
       .post(
-        "http://localhost:5000/company/register",
+        "https://hiring-channel-application.herokuapp.com/company/register",
         qs.stringify({
           email: this.state.email,
           password: this.state.password
@@ -58,7 +70,8 @@ class LoginCompany extends Component {
         } else {
           const storeToken = await axios({
             method: "get",
-            url: "http://localhost:5000/company/login",
+            // url: "http://localhost:5000/company/login",
+            url: "https://hiring-channel-application.herokuapp.com/company/login",
             params: {
               email: this.state.email,
               password: this.state.password
@@ -91,7 +104,8 @@ class LoginCompany extends Component {
     e.preventDefault();
     axios({
       method: "get",
-      url: "http://localhost:5000/company/login",
+      // url: "http://localhost:5000/company/login",
+      url: "https://hiring-channel-application.herokuapp.com/company/login",
       params: {
         email: this.state.email,
         password: this.state.password
