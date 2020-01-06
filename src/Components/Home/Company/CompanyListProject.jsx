@@ -152,6 +152,16 @@ class CompanyListProject extends Component {
         <section id="project-list-company" className="project-list-company">
           <div className="container">
             <div className="row">
+              <div className="col d-flex flex-row justify-content-end">
+                <a
+                  class="waves-effect waves-light btn modal-trigger red lighten-1 white-text"
+                  href="#modal1"
+                >
+                  Add Project
+                </a>
+              </div>
+            </div>
+            <div className="row">
               <div className="col s12 center">
                 <table className="highlight centered responsive-table">
                   <thead>
@@ -229,12 +239,12 @@ class CompanyListProject extends Component {
           <div className="row">
             <div className="container">
               <div className="col">
-                <a
+                {/* <a
                   class="waves-effect waves-light btn modal-trigger red lighten-1 white-text"
                   href="#modal1"
                 >
                   Add Project
-                </a>
+                </a> */}
 
                 <div id="modal1" class="modal bottom-sheet">
                   <div class="modal-content">

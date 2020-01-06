@@ -112,7 +112,7 @@ class InsertDataCompany extends Component {
             </div>
             <div className="row">
               <div className="col s12 m4">
-                <a class="waves-effect waves-light btn red lighten-2 white-text" onClick={this.insertData}>button</a>
+                <a class="waves-effect waves-light btn red lighten-2 white-text" onClick={this.insertData}>INSERT</a>
               </div>
             </div>
           </section>

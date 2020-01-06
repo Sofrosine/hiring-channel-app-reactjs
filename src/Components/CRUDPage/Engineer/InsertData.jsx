@@ -99,7 +99,7 @@ class InsertData extends Component {
                   class="waves-effect waves-light btn red lighten-2 white-text"
                   onClick={this.handleSubmit}
                 >
-                  button
+                  INSERT
                 </a>
               </div>
             </div>
