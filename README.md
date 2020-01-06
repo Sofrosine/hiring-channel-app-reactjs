@@ -10,7 +10,7 @@ Here is a simple app called hiring-app-reactjs,an app for connecting between com
 3. Node js
 4. phpMyAdmin
 
-## DATA
+## INDEX
 1. Depedencies
 2. Endpoints
 3. How to filter
@@ -28,6 +28,10 @@ Here is a simple app called hiring-app-reactjs,an app for connecting between com
 10. react-dom "16.8.3"
 11. react-router-dom "5.1.2"
 12. react-scripts "3.3.0"
+13. materialize-css "1.0.0-rc.2"
+14. redux "4.0.5"
+15. redux-logger "3.0.6"
+16. redux-promise-middleware "6.1.2"
 
 ### Endpoints
 
