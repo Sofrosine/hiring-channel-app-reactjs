@@ -31,6 +31,13 @@ import updateAddProject from './Company/AddProject/updateAddProject'
 import insertAddProject from './Company/AddProject/insertAddProject'
 import getTotalProject from './Engineer/getTotalProject'
 
+import getProfileEngineer from './Engineer/getProfileEngineer'
+
+import getLoginEngineer from './LoginRegister/Engineer/getLoginEngineer'
+import postRegisterEngineer from './LoginRegister/Engineer/postRegisterEngineer'
+import getLoginCompany from './LoginRegister/Company/getLoginCompany'
+import postRegisterCompany from './LoginRegister/Company/postRegisterCompany'
+
 const reducers = combineReducers({
   redirectNavbar,
   getUser,
@@ -62,8 +69,12 @@ const reducers = combineReducers({
   getProfileAddProject,
   updateAddProject,
   insertAddProject,
-  getTotalProject
-
+  getTotalProject,
+  getLoginEngineer,
+  postRegisterEngineer,
+  getLoginCompany,
+  postRegisterCompany,
+  getProfileEngineer
 })
 
 export default reducers

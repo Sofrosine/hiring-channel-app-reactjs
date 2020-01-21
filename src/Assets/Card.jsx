@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import "./Card.css";
 import axios from 'axios'
 import { Redirect } from "react-router-dom";
+import {connect} from 'react-redux'
+import { getProfileEngineer } from "../Redux/Actions/Engineer/getProfileEngineer";
 
 class Card extends Component {
   state = {
@@ -22,19 +24,8 @@ class Card extends Component {
 
   getProfile = e => {
     e.stopPropagation()
-    const config = {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(
-          localStorage.getItem("accessToken")
-        )}`
-      }
-    };
-    axios
-      .get(`http://localhost:5000/engineer/user/${this.state.user}`, config)
-      // .get(`https://hiring-channel-application.herokuapp.com/engineer/user/${this.state.user}`, config)
+      this.props.dispatch(getProfileEngineer(this.state.user))
       .then(result => {
-        console.log(result);
-        const data = result.data;
         this.setState({
           ...this.state,
           redirectProfile: true
@@ -110,4 +101,11 @@ class Card extends Component {
   }
 }
 
-export default Card;
+const mapStateToProps = state => {
+  return {
+    profileEngineer: state.getProfileEngineer.profileEngineer,
+
+  };
+};
+
+export default connect(mapStateToProps)(Card);

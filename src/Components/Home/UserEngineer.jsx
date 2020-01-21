@@ -31,20 +31,14 @@ class UserEngineer extends Component {
         `http://localhost:5000/engineer/user/${this.props.match.params.userId}`,
         config
       )
-      // .get(
-      //   `https://hiring-channel-application.herokuapp.com/engineer/user/${this.props.match.params.userId}`,
-      //   config
-      // )
       .then(result => {
         console.log('result data',result);
-        // console.log(result.data);
         const data = result.data;
         this.setState({
           ...this.state,
           profile: Object.values(data[0])
         });
         console.log(this.state.profile);
-        // console.log(this.state.profile)
       })
       .catch(err => {
         console.log(err);
@@ -108,7 +102,7 @@ class UserEngineer extends Component {
                     </tr>
                     <tr>
                       <th scope="row">Skill</th>
-                      <td>{this.state.profile[8]}</td>
+                      <td>{this.state.profile[9]}</td>
                     </tr>
                     <tr>
                       <th scope="row">Location</th>

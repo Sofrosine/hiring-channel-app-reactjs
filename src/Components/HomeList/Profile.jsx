@@ -38,19 +38,19 @@ const Profile = props => {
             <div id="showcase-profile">
               <span id="proj" class="demo-card-image__filename">
                 <i class="material-icons">check_circle</i>
-                {props.profile[11]} Projects
+                {props.profile[12]} Projects
                     </span>
               <span id="success-rate" class="demo-card-image__filename">
                 {" "}
                 <i class="material-icons">star</i>
-                {`${Math.ceil(props.profile[10]) || 0}% Success Rate`}
+                {`${Math.ceil(props.profile[11]) || 0}% Success Rate`}
               </span>
             </div>
             <div id="skill-profile" class="demo-card-image__filename">
               Skills
                   </div>
             <div id="list-of-skill" class="demo-card-image__filename">
-              {props.profile[8]}
+              {props.profile[9]}
             </div>
           </div>
         </div>

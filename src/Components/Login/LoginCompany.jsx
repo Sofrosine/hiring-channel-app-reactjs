@@ -16,6 +16,9 @@ import {
   faFrown,
   faHome
 } from "@fortawesome/free-solid-svg-icons";
+import { connect } from "react-redux";
+import { getLoginCompany } from "../../Redux/Actions/LoginRegister/Company/getLoginCompany";
+import { postRegisterCompany } from "../../Redux/Actions/LoginRegister/Company/postRegisterCompany";
 
 class LoginCompany extends Component {
   state = {
@@ -30,33 +33,9 @@ class LoginCompany extends Component {
     });
   };
 
-  handleSubmitRegister = e => {
+  handleSubmitRegister = async e => {
     e.preventDefault();
-    axios
-      .post(
-        "http://localhost:5000/company/register",
-        qs.stringify({
-          email: this.state.email,
-          password: this.state.password
-        }),
-        {
-          header: {
-            "Content-Type": "application/x-www-form-urlencoded"
-          }
-        }
-      )
-      // .post(
-      //   "https://hiring-channel-application.herokuapp.com/company/register",
-      //   qs.stringify({
-      //     email: this.state.email,
-      //     password: this.state.password
-      //   }),
-      //   {
-      //     header: {
-      //       "Content-Type": "application/x-www-form-urlencoded"
-      //     }
-      //   }
-      // )
+    await this.props.dispatch(postRegisterCompany(this.state.email,this.state.password))
       .then(async result => {
         if (
           result.data === "Your email is not valid" ||
@@ -68,16 +47,11 @@ class LoginCompany extends Component {
             icon: "warning"
           });
         } else {
-          const storeToken = await axios({
-            method: "get",
-            url: "http://localhost:5000/company/login",
-            // url: "https://hiring-channel-application.herokuapp.com/company/login",
-            params: {
-              email: this.state.email,
-              password: this.state.password
-            }
-          }).then(({ data }) => {
-            const { token, id_company } = data.data;
+          await this.props.dispatch(getLoginCompany(this.state.email, this.state.password))
+          .then((result) => {
+            const data = this.props.companyData.data.data
+            const message = this.props.companyData.data.message
+            const { token, id_company } = data;
             localStorage.setItem("id_company", JSON.stringify(id_company));
             console.log(token);
             localStorage.setItem("accessToken", JSON.stringify(token));
@@ -100,30 +74,26 @@ class LoginCompany extends Component {
       });
   };
 
-  handleSubmitLogin = e => {
+  handleSubmitLogin = async e => {
     e.preventDefault();
-    axios({
-      method: "get",
-      url: "http://localhost:5000/company/login",
-      // url: "https://hiring-channel-application.herokuapp.com/company/login",
-      params: {
-        email: this.state.email,
-        password: this.state.password
-      }
-    })
-      .then(({ data }) => {
+    await this.props.dispatch(getLoginCompany(this.state.email,this.state.password))
+      .then((result) => {
+        console.log('companyData',this.props.companyData)
+        console.log('message', this.props.companyData.data.message)
+        const data = this.props.companyData.data.data
+        const message = this.props.companyData.data.message
         console.log(data);
         if (
-          data.message === "Password is incorrect!" ||
-          data.message === "Email or password is incorrect!"
+          message === "Password is incorrect!" ||
+          message === "Email or password is incorrect!"
         ) {
           Swal.fire({
-            title: `${data.message}`,
+            title: `${message}`,
             text: "Please insert the valid value",
             icon: "warning"
           });
         } else {
-          const { token, id_company } = data.data;
+          const { token, id_company } = data;
           localStorage.setItem("id_company", JSON.stringify(id_company));
           console.log(id_company);
           console.log(token);
@@ -266,4 +236,10 @@ class LoginCompany extends Component {
   }
 }
 
-export default LoginCompany;
+const mapStateToProps = state => {
+  return {
+    companyData: state.getLoginCompany.companyData
+  };
+};
+
+export default connect(mapStateToProps)(LoginCompany);

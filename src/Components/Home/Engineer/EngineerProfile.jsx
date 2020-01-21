@@ -102,8 +102,9 @@ class EngineerProfile extends Component {
     this.checkToken();
   }
 
-  componentDidMount() {
-    this.getProfile();
+  async componentDidMount() {
+    await this.getProfile();
+    console.log('profileee', this.state.profile)
   }
 
   render() {

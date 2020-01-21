@@ -15,6 +15,9 @@ import {
 import qs from "querystring";
 import Swal from "sweetalert2";
 import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import { getLoginEngineer } from "../../Redux/Actions/LoginRegister/Engineer/getLoginEngineer";
+import { postRegisterEngineer } from "../../Redux/Actions/LoginRegister/Engineer/postRegisterEngineer";
 
 class LoginEngineer extends Component {
   state = {
@@ -29,34 +32,11 @@ class LoginEngineer extends Component {
     });
   };
 
-  handleSubmitRegister = e => {
+  handleSubmitRegister = async e => {
     e.preventDefault();
-    axios
-      .post(
-        "http://localhost:5000/engineer/register",
-        qs.stringify({
-          email: this.state.email,
-          password: this.state.password
-        }),
-        {
-          header: {
-            "Content-Type": "application/x-www-form-urlencoded"
-          }
-        }
-      )
-      // .post(
-      //   "https://hiring-channel-application.herokuapp.com/engineer/register",
-      //   qs.stringify({
-      //     email: this.state.email,
-      //     password: this.state.password
-      //   }),
-      //   {
-      //     header: {
-      //       "Content-Type": "application/x-www-form-urlencoded"
-      //     }
-      //   }
-      // )
+    await this.props.dispatch(postRegisterEngineer(this.state.email, this.state.password))
       .then(async result => {
+        console.log(result)
         if (
           result.data === "Your email is not valid" ||
           result.data === "Your password is not valid "
@@ -67,16 +47,11 @@ class LoginEngineer extends Component {
             icon: "warning"
           });
         } else {
-          const storeToken = await axios({
-            method: "get",
-            url: "http://localhost:5000/engineer/login",
-            // url: "https://hiring-channel-application.herokuapp.com/engineer/login",
-            params: {
-              email: this.state.email,
-              password: this.state.password
-            }
-          }).then(({ data }) => {
-            const { token, id_engineer } = data.data;
+          await this.props.dispatch(getLoginEngineer(this.state.email,this.state.password))
+          .then((result) => {
+            const message = this.props.engineerData.data.message
+            const data = this.props.engineerData.data.data
+            const { token, id_engineer } = data;
             localStorage.setItem("id_engineer", JSON.stringify(id_engineer));
             console.log(token);
             localStorage.setItem("accessToken", JSON.stringify(token));
@@ -99,30 +74,23 @@ class LoginEngineer extends Component {
       });
   };
 
-  handleSubmitLogin = e => {
+  handleSubmitLogin = async e => {
     e.preventDefault();
-    axios({
-      method: "get",
-      url: "http://localhost:5000/engineer/login",
-      // url: "https://hiring-channel-application.herokuapp.com/engineer/login",
-      params: {
-        email: this.state.email,
-        password: this.state.password
-      }
-    })
-      .then(async ({ data }) => {
-        console.log(data);
+    await this.props.dispatch(getLoginEngineer(this.state.email, this.state.password))
+      .then(async (result) => {
+        const message = this.props.engineerData.data.message
+        const data = this.props.engineerData.data.data
         if (
-          data.message === "Password is incorrect!" ||
-          data.message === "Email or password is incorrect!"
+          message === "Password is incorrect!" ||
+          message === "Email or password is incorrect!"
         ) {
           Swal.fire({
-            title: `${data.message}`,
+            title: `${message}`,
             text: "Please insert the valid value",
             icon: "warning"
           });
         } else {
-          const { token, id_engineer } = data.data;
+          const { token, id_engineer } = data;
           localStorage.setItem("id_engineer", JSON.stringify(id_engineer));
           console.log(token);
           localStorage.setItem("accessToken", JSON.stringify(token));
@@ -261,4 +229,10 @@ class LoginEngineer extends Component {
   }
 }
 
-export default LoginEngineer;
+const mapStateToProps = state => {
+  return {
+    engineerData: state.getLoginEngineer.engineerData
+  };
+};
+
+export default connect(mapStateToProps)(LoginEngineer);

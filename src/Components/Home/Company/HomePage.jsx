@@ -22,6 +22,7 @@ import { searchUser } from "../../../Redux/Actions/HomePage/searchUser";
 import Navbar from "../../Navbar";
 import Pagination from "./Util/Pagination";
 import Card from "../../../Assets/Card";
+import { getProfileEngineer } from "../../../Redux/Actions/Engineer/getProfileEngineer";
 
 class HomePage extends Component {
   state = {
@@ -149,30 +150,32 @@ class HomePage extends Component {
     console.log('name',e.target.name);
   };
 
-  getProfile = e => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(
-          localStorage.getItem("accessToken")
-        )}`
-      }
-    };
-    axios
-      .get(`http://localhost:5000/engineer/user/${this.state.user}`, config)
-      // .get(`https://hiring-channel-application.herokuapp.com/engineer/user/${this.state.user}`, config)
-      .then(result => {
-        console.log(result);
-        const data = result.data;
-        this.setState({
-          ...this.state,
-          profile: Object.values(data[0])
-        });
-        this.props.history.push(`/user/${this.state.user}`);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
+  // getProfile = e => {
+  //   const config = {
+  //     headers: {
+  //       Authorization: `Bearer ${JSON.parse(
+  //         localStorage.getItem("accessToken")
+  //       )}`
+  //     }
+  //   };
+  //   // axios
+  //   //   .get(`http://localhost:5000/engineer/user/${this.state.user}`, config)
+  //   this.props.dispatch(getProfileEngineer(this.state.user))
+  //     // .get(`https://hiring-channel-application.herokuapp.com/engineer/user/${this.state.user}`, config)
+  //     .then(result => {
+  //       console.log('asjdlkasjd', this.props.profileEngineer)
+  //       console.log(result);
+  //       const data = result.data;
+  //       this.setState({
+  //         ...this.state,
+  //         profile: Object.values(data[0])
+  //       });
+  //       this.props.history.push(`/user/${this.state.user}`);
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // };
   handleRedirectHome = () => {
     this.setState({
       redirectHome: true
@@ -459,7 +462,7 @@ const mapStateToProps = state => {
     user: state.getUser,
     searchUser: state.searchUser,
     homeCompany: state.redirectNavbar.homeCompany,
-    
+    profileEngineer: state.getProfileEngineer.profileEngineer,
    profileCompany: state.redirectNavbar.profileCompany
   };
 };
