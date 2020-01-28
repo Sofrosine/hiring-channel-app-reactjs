@@ -16,6 +16,7 @@
     "jquery": "^3.4.1",
     "jwt-decode": "^2.2.0",
     "materialize-css": "^1.0.0-rc.2",
+    "node-sass": "^4.13.1",
     "popper.js": "^1.16.0",
     "querystring": "^0.2.0",
     "react": "^16.9.0",

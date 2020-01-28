@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./HomePage.css";
+import "./HomePage.scss";
 import arkaLogo from "../../../Assets/img/arkademy-logo.png";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -334,40 +334,9 @@ class HomePage extends Component {
                   </div>
                 </form>
               </div>
-
-              <div className="col s12 m4 m-auto right">
-                <ul className="pagination">
-                  <li className="page-item">
-                    <a
-                      className="page-link red-text text-lighten-2 white"
-                      href="#"
-                      onClick={this.limitMin}
-                    >
-                      -
-                    </a>
-                  </li>
-                  <li className="page-item">
-                    <a
-                      className="page-link red-text text-lighten-2 white"
-                      href="#"
-                    >
-                      {this.state.limit}
-                    </a>
-                  </li>
-                  <li className="page-item">
-                    <a
-                      className="page-link red-text text-lighten-2 white"
-                      href="#"
-                      onClick={this.limitPlus}
-                    >
-                      +
-                    </a>
-                  </li>
-                </ul>
-              </div>
             </div>
             <div className="row">
-              <div className="col s12 m6 center">
+              <div className="col s12 m4 center">
                 <a
                   class="dropdown-trigger btn red lighten-2 white-text"
                   href="#"
@@ -408,7 +377,51 @@ class HomePage extends Component {
                   </li>
                 </ul>
               </div>
-              <div className="col s12 m6 center">
+              <div className="col s12 m4 center">
+                {/* <div>
+                <ul className="pagination">
+                  <li className="page-item">
+                    <a
+                      className="page-link red-text text-lighten-2 white"
+                      href="#"
+                      onClick={this.limitMin}
+                    >
+                      -
+                    </a>
+                  </li>
+                  <li className="page-item">
+                    <a
+                      className="page-link red-text text-lighten-2 white"
+                      href="#"
+                    >
+                      {this.state.limit}
+                    </a>
+                  </li>
+                  <li className="page-item">
+                    <a
+                      className="page-link red-text text-lighten-2 white"
+                      href="#"
+                      onClick={this.limitPlus}
+                    >
+                      +
+                    </a>
+                  </li>
+                </ul>
+              </div> */}
+                <div className="limit">
+                  <p>LIMIT</p>
+                  <ul className="limit-body-container">
+                    <li className="limit-item" onClick={this.limitMin}>
+                      -
+                    </li>
+                    <li className="limit-item">{this.state.limit}</li>
+                    <li className="limit-item" onClick={this.limitPlus}>
+                      +
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div className="col s12 m4 center">
                 <a
                   class="dropdown-trigger btn red lighten-2 white-text"
                   href="#"
@@ -443,12 +456,23 @@ class HomePage extends Component {
           </div>
         </section>
         <div className="card-list mb-2">
-          <Card user={this.state.user} getProfile={this.getProfile} getUserId={this.getUserId} engineerList={this.state.engineers}/>
+          <Card
+            user={this.state.user}
+            getProfile={this.getProfile}
+            getUserId={this.getUserId}
+            engineerList={this.state.engineers}
+          />
         </div>
         <section id="change-page" className="change-page">
           <div className="row">
             <div className="col s12 d-flex flex-direction-row justify-content-center">
-              <Pagination prevPage={this.previousPage} nextPage={this.nextPage} totalData={this.state.totalData} page={this.state.page} pages={this.state.pages}/>
+              <Pagination
+                prevPage={this.previousPage}
+                nextPage={this.nextPage}
+                totalData={this.state.totalData}
+                page={this.state.page}
+                pages={this.state.pages}
+              />
             </div>
           </div>
         </section>

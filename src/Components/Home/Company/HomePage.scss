@@ -1,0 +1,106 @@
+.navbar-brand img {
+  width: 80px;
+  height: 60px;
+}
+
+.image-home:hover {
+  cursor: pointer;
+}
+
+.navbar {
+  border-bottom: 2px solid rgb(241, 241, 241);
+}
+
+.search-input .form-inline input {
+  width: 600px;
+}
+
+.navbar-nav .search-input form {
+  width: 650px;
+}
+
+ul {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.home-text .nav-link {
+  font-weight: 800;
+  color: black;
+}
+
+.chat-navbar,
+.notification-navbar {
+  display: flex;
+  float: right;
+}
+
+.profile-image {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.homepage {
+  display: flex;
+  flex-direction: column;
+}
+
+.filtering {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.card-list {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.overflow-test {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.limit {
+  display: flex;
+  flex-direction: column;
+  p {
+    color: #e57373;
+    font-size: 1.2rem;
+  }
+  ul {
+    display: flex;
+    justify-content: center;
+    li {
+      color: #e57373;
+      width: 2rem;
+      border: 1px solid #e57373;
+      &:first-child {
+        border-top-left-radius: 2px;
+        border-bottom-left-radius: 2px;
+        &:hover {
+          cursor: pointer;
+        }
+        &:active {
+          background-color: #e57373;
+          color: white;
+        }
+      }
+      &:last-child {
+        border-top-right-radius: 2px;
+        border-bottom-right-radius: 2px;
+        &:hover {
+          cursor: pointer;
+        }
+        &:active {
+          background-color: #e57373;
+          color: white;
+        }
+      }
+    }
+  }
+}
