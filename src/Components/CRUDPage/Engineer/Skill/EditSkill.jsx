@@ -86,7 +86,7 @@ class EditSkill extends Component {
     const data = this.props.profileDataSkill.data
     if(Object.values(data[0])[8] !== null) {
       return this.setState({
-        profile: Object.values(data[0])[8].split(",")
+        profile: Object.values(data[0])[9].split(",")
       });
     }
     
